@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Ontides&#39;s Blog</title>
-  
+  <subtitle>Share my growth and thoughts</subtitle>
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://ontides.github.io/"/>
-  <updated>2017-02-16T05:38:02.000Z</updated>
+  <updated>2017-02-16T06:03:15.000Z</updated>
   <id>https://ontides.github.io/</id>
   
   <author>
@@ -16,11 +16,220 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Web全栈之路——《Web全栈工程师的自我修养》读书笔记</title>
+    <link href="https://ontides.github.io/2017/01/25/Web%E5%85%A8%E6%A0%88%E4%B9%8B%E8%B7%AF%E2%80%94%E2%80%94%E3%80%8AWeb%E5%85%A8%E6%A0%88%E5%B7%A5%E7%A8%8B%E5%B8%88%E7%9A%84%E8%87%AA%E6%88%91%E4%BF%AE%E5%85%BB%E3%80%8B%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    <id>https://ontides.github.io/2017/01/25/Web全栈之路——《Web全栈工程师的自我修养》读书笔记/</id>
+    <published>2017-01-25T05:25:32.000Z</published>
+    <updated>2017-02-16T06:03:15.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>初次听到全栈工程师这个称谓的时候，我就被这个「霸气」的名字所吸引，全栈在我心里一直是技术厉害的大触的专属标签。虽然经常听到这个词，但是对这个词本身的理解却不甚清晰，甚至一度把全栈工程师简单地以为是全“端”工程师，以为同时会前端和后端就是全栈了，后来才知道，这种认识是多么粗浅。</p>
+<p>无意间看到了《Web全栈工程师的自我修养》这本书，简单看了看目录就决定要买下来了，怀着对全栈的向往，我还是十分期待看这本书的。</p>
+<h2 id="全书小述"><a href="#全书小述" class="headerlink" title="全书小述"></a>全书小述</h2><p>首先贴出全书的脉络图，我根据书本身的章节分成了16部分，尽可能概括地展现书中对我印象较为深刻的内容，并讲一些我觉得比较重要的地方详细地描述，而一些枝节便删了去。</p>
+<p><img src="https://ww2.sinaimg.cn/large/006tNbRwjw1fbaakofqdhj31kw17vn81.jpg" alt="Web全栈工程师的自我修养"></p>
+<p>感觉起来这本书更像是作者的随笔集，内容广而不深，读起来也就比较轻松。整本书的内容通俗易懂，其中还专门设置了一章“从学生到工程师”，可以看出全书更多的还是面向在校生和初学者。</p>
+<p>正如书名上所用的词“自我修养”，这本书详细地描述了作为Web全栈工程师所应具备的“修养”，不仅仅包括编码上的能力，也包括了职场处事，思维方式，和生活方式上的“修养”，对拓展视野和思维方式有所裨益。</p>
+<h2 id="知识小记"><a href="#知识小记" class="headerlink" title="知识小记"></a>知识小记</h2><p>看完全书，我感觉内容多而杂，好在内容平易近人，还是有不少有所收获的点，这里对一些点做下总结。</p>
+<h3 id="何为全栈"><a href="#何为全栈" class="headerlink" title="何为全栈"></a>何为全栈</h3><p>「全栈」表示未完成一个项目，所需要的一系列技术的集合</p>
+<p>「全栈工程师」是一专多长，能够熟练运用多种技术栈独立完成一个产品的人。而那些拥有众多技术栈，而每种技术栈只是浅尝辄止，略知一二的人则被作者称为「野生程序员」</p>
+<h3 id="如何成为全栈工程师"><a href="#如何成为全栈工程师" class="headerlink" title="如何成为全栈工程师"></a>如何成为全栈工程师</h3><ol>
+<li><p>先精后广，一专多长</p>
+<p>学习全栈技能的时候应当在特定的方向上有比较深入的钻研，然后再将学习目标逐渐推广开来。</p>
+</li>
+<li><p>围绕商业目标</p>
+<p>老板雇佣一个程序员，不是因为他能写程序，而是因为他能帮助自己赚钱。应该解决问题，而不是醉心技术，如果痴迷于技术本身，反而看不到问题的所在。</p>
+</li>
+<li><p>关注用户体验</p>
+<p>每一个糟糕的体验背后都蕴含着商机，应当从用户体验的角度考虑问题，要做自己会用的产品</p>
+</li>
+</ol>
+<h3 id="Web全栈工程师所应具备的技术"><a href="#Web全栈工程师所应具备的技术" class="headerlink" title="Web全栈工程师所应具备的技术"></a>Web全栈工程师所应具备的技术</h3><ol>
+<li><p>HTTP</p>
+<ul>
+<li><p>前端视角</p>
+<p>目的：让网站又好又快地展现在用户的面前</p>
+<p>关注点：</p>
+<ul>
+<li>尽量减少同一域下的HTTP请求数</li>
+<li>尽量减少每一个资源的体积</li>
+</ul>
+</li>
+<li><p>后端视角</p>
+<p>目的：让服务器尽快响应请求以及减少请求对服务器的开销</p>
+<p>关注点：</p>
+<ul>
+<li>提高服务器的请求处理能力</li>
+<li>预防DDoS攻击</li>
+</ul>
+</li>
+<li><p>前后端交集——BigPipe</p>
+</li>
+</ul>
+</li>
+<li><p>缓存</p>
+<ul>
+<li>服务器缓存<ul>
+<li>基本的数据库查询缓存</li>
+<li>扩展数据库缓存：memcached</li>
+<li>文件缓存</li>
+<li>静态化</li>
+</ul>
+</li>
+<li>浏览器缓存<ul>
+<li>Expires</li>
+<li>Last-Modified</li>
+<li>Cache-Control</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>持续集成</p>
+<ul>
+<li><p>版本控制</p>
+<p>方式有Git和SVN</p>
+<p>最佳实践：</p>
+<ul>
+<li>鼓励频繁地提交</li>
+<li>确定分支流程</li>
+<li>定义于主干原则并坚守它</li>
+<li>不要把逻辑的修改和代码格式化放在一起</li>
+<li>不相干的代码分开提交</li>
+<li>保持工作代码库的“干净”</li>
+</ul>
+</li>
+<li><p>包管理</p>
+<p>工具有npm，bower，Composer，gem，CocoaPods等</p>
+</li>
+<li><p>构建工具</p>
+<p>在良好架构基础上使用构建工具来整合代码</p>
+<p>工具有Make，Grunt和Gulp等</p>
+<p>良好的架构：</p>
+<ul>
+<li>有合适的分离粒度</li>
+<li>最小知识原则</li>
+<li>DRY</li>
+<li>最小化预先设计</li>
+<li>通过良好的分级，让文件易于找到</li>
+<li>有一致且可执行的命名规则</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>软件设计方法</p>
+<ul>
+<li><p>设计模式</p>
+<p>关注点：</p>
+<ul>
+<li>高效编写代码</li>
+<li>高可复用性</li>
+<li>抽象带来的可读性</li>
+</ul>
+<p>分类：</p>
+<ul>
+<li>创建型模式</li>
+<li>结构型模式</li>
+<li>行为型模式</li>
+</ul>
+</li>
+<li><p>架构模式</p>
+<p>MVC模式</p>
+</li>
+<li><p>设计原则</p>
+<ul>
+<li>DRY</li>
+<li>惯例优于设置</li>
+<li>KISS原则</li>
+<li>最少知道原则</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>大前端知识体系</p>
+<p>初级：</p>
+<ul>
+<li>了解浏览器兼容性</li>
+<li>理解HTML／CSS／JavaScript语法和原理</li>
+<li>熟悉编辑器和插件</li>
+<li>了解调试工具</li>
+<li>熟悉版本管理软件</li>
+<li>熟练使用前端库／框架</li>
+<li>了解相关标准和规范</li>
+</ul>
+<p>中级：</p>
+<ul>
+<li>对代码质量，代码规范有了解</li>
+<li>熟悉JavaScript单元测试</li>
+<li>应用和理解性能优化</li>
+<li>应用和理解SEO</li>
+<li>代码部署能力</li>
+<li>移动Web相关知识</li>
+</ul>
+<p>高级：</p>
+<ul>
+<li>代码架构</li>
+<li>安全</li>
+<li>对自动化测试的理解</li>
+</ul>
+</li>
+</ol>
+<h3 id="全栈工程师生活方式和思维方式"><a href="#全栈工程师生活方式和思维方式" class="headerlink" title="全栈工程师生活方式和思维方式"></a>全栈工程师生活方式和思维方式</h3><ol>
+<li><p>积累作品集</p>
+<p>用处：向其他人展现自己的能力</p>
+<p>方式：Github和静态页面</p>
+</li>
+<li><p>高效</p>
+<ul>
+<li><p>阅读英文资料</p>
+</li>
+<li><p>时间管理四象限</p>
+<p><img src="https://ww3.sinaimg.cn/large/006tNbRwjw1fbadecoyv2j309i06gglz.jpg" alt="002vgR8Mty6DXeznd0S62&amp;690"></p>
+</li>
+<li><p>消除重复工作</p>
+</li>
+<li><p>给自己留出不被打扰的时间</p>
+</li>
+<li><p>番茄工作法</p>
+</li>
+<li><p>跨界思考</p>
+</li>
+<li><p>纸上头脑风暴</p>
+</li>
+<li><p>使用版本控制工具盒构建系统</p>
+</li>
+</ul>
+</li>
+<li><p>全栈思维</p>
+<ul>
+<li>想着把自己的产品和自己的名字联系起来</li>
+<li>学一点管理<ul>
+<li>好的管理者能让平凡的员工做不平凡的事</li>
+<li>根据员工特质来授权</li>
+</ul>
+</li>
+<li>培养沟通能力</li>
+</ul>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      初次听到全栈工程师这个称谓的时候，我就被这个「霸气」的名字所吸引，全栈在我心里一直是技术厉害的大触的专属标签。虽然经常听到这个词，但是对这个词本身的理解却不甚清晰，甚至一度把全栈工程师简单地以为是全“端”工程师，以为同时会前端和后端就是全栈了，后来才知道，这种认识是多么粗浅。
+    
+    </summary>
+    
+    
+      <category term="Web" scheme="https://ontides.github.io/tags/Web/"/>
+    
+      <category term="读书笔记" scheme="https://ontides.github.io/tags/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/"/>
+    
+  </entry>
+  
+  <entry>
     <title>[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</title>
     <link href="https://ontides.github.io/2016/11/17/%E8%AF%91-%E3%80%8AUnderstanding-ECMAScript-6%E3%80%8BChapter-1%EF%BC%9ABlock-Bindings/"/>
     <id>https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/</id>
     <published>2016-11-17T04:32:43.000Z</published>
-    <updated>2017-02-16T05:38:02.000Z</updated>
+    <updated>2017-02-16T05:43:12.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="《理解-ECMAScript-6》第一章：块绑定"><a href="#《理解-ECMAScript-6》第一章：块绑定" class="headerlink" title="《理解 ECMAScript 6》第一章：块绑定"></a>《理解 ECMAScript 6》第一章：块绑定</h1><hr>
 <p>以前，变量声明方式是JavaScript编程中一个令人困惑的部分。在大部分类C语言里，变量（或者说作用域）在声明的地方生成。但是在JavaScript中，情况就不是这样了。变量实际上创建的地方取决于你声明它的方式，而ECMAScript 6提供了一些可选的方式来让你更容易地控制作用域。本章将会告诉你为什么经典的<code>var</code>声明会令人感到困惑，并且会介绍ECMAScript 6中的块级作用域，然后会给出如何使用它们的最佳实践。</p>
@@ -113,6 +322,10 @@
     </summary>
     
     
+      <category term="JavaScript" scheme="https://ontides.github.io/tags/JavaScript/"/>
+    
+      <category term="翻译" scheme="https://ontides.github.io/tags/%E7%BF%BB%E8%AF%91/"/>
+    
   </entry>
   
   <entry>
@@ -120,7 +333,7 @@
     <link href="https://ontides.github.io/2016/11/08/JavaScript%E4%B8%AD%E7%9A%84this/"/>
     <id>https://ontides.github.io/2016/11/08/JavaScript中的this/</id>
     <published>2016-11-07T16:20:31.000Z</published>
-    <updated>2017-02-16T05:39:25.000Z</updated>
+    <updated>2017-02-16T05:43:36.000Z</updated>
     
     <content type="html"><![CDATA[<p>学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。</p>
 <hr>
@@ -278,6 +491,8 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     </summary>
     
     
+      <category term="JavaScript" scheme="https://ontides.github.io/tags/JavaScript/"/>
+    
   </entry>
   
   <entry>
@@ -285,7 +500,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     <link href="https://ontides.github.io/2016/10/17/%E8%AF%91-%E3%80%8AUnderstanding-ECMAScript-6%E3%80%8B%E2%80%94%E2%80%94Introduction/"/>
     <id>https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/</id>
     <published>2016-10-16T16:49:08.000Z</published>
-    <updated>2017-02-16T05:27:26.000Z</updated>
+    <updated>2017-02-16T05:42:42.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="《理解-ECMAScript-6》——简介"><a href="#《理解-ECMAScript-6》——简介" class="headerlink" title="《理解 ECMAScript 6》——简介"></a>《理解 ECMAScript 6》——简介</h1><p>JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展对作为整体的JavaScript的成功至关重要，而这本书包含了这个语言近来最重要的更新——ECMAScript6的诸多改变。</p>
 <h2 id="一、走向-ECMAScript-6"><a href="#一、走向-ECMAScript-6" class="headerlink" title="一、走向 ECMAScript 6"></a>一、走向 ECMAScript 6</h2><p>2007年，JavaScript处在一个发展的关键时刻。当饱受欢迎的Ajax引领着动态Web应用的新时代时，JavaScript自从1999年第三版的ECMA-262发布后一直没有变化。作为负责推动ECMAScript发展进程的委员会，TC-39为 ECMAScript 4 制定了大量的规范草案。新的特性包括新语法、模块、类、类的继承、对象私有变量，以及可选类型注释等等。</p>
@@ -354,6 +569,10 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     </summary>
     
     
+      <category term="JavaScript" scheme="https://ontides.github.io/tags/JavaScript/"/>
+    
+      <category term="翻译" scheme="https://ontides.github.io/tags/%E7%BF%BB%E8%AF%91/"/>
+    
   </entry>
   
   <entry>
@@ -361,7 +580,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     <link href="https://ontides.github.io/2016/10/05/%E7%BB%86%E8%AF%B4JavaScript%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E9%97%AD%E5%8C%85/"/>
     <id>https://ontides.github.io/2016/10/05/细说JavaScript作用域和闭包/</id>
     <published>2016-10-05T02:36:19.000Z</published>
-    <updated>2017-02-16T05:39:34.000Z</updated>
+    <updated>2017-02-16T05:44:10.000Z</updated>
     
     <content type="html"><![CDATA[<p>还记得最开始接触JavaScript时，只是会用<code>document.getElementById(&quot;&quot;)</code>这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认识到在前后端分离的时候，前端原来可以做到这么多东西，诸如模块，路由，依赖注入，双向绑定这样的词汇让我感到陌生而不知所措。即便是我已经在那个项目中使用AngularJS中上面所说的那些特性，我对AngularJS还是充满了困惑——我不清楚AngularJS是如何实现的。</p>
 <p>审视自己对JavaScript浅薄认识，我意识到自己应该去先把js语言本身好好学习一下。确实，在较为仔细地学习了ECMAScript后，我发现，我开始理解模块的实现，对如<code>.apply()</code>，<code>.bind()</code>等用法的了解让我对如何写出更好的js代码有了更多的理解。当然，现在我也只是入门水平，还需要不断学习和提高。</p>
@@ -769,6 +988,8 @@ foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span
     </summary>
     
     
+      <category term="JavaScript" scheme="https://ontides.github.io/tags/JavaScript/"/>
+    
   </entry>
   
   <entry>
@@ -776,7 +997,7 @@ foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span
     <link href="https://ontides.github.io/2016/10/03/JavaScript%E4%B8%AD%E7%9A%84LHS%E6%9F%A5%E8%AF%A2%E5%92%8CRHS%E6%9F%A5%E8%AF%A2/"/>
     <id>https://ontides.github.io/2016/10/03/JavaScript中的LHS查询和RHS查询/</id>
     <published>2016-10-03T02:22:13.000Z</published>
-    <updated>2017-02-16T05:39:12.000Z</updated>
+    <updated>2017-02-16T05:43:44.000Z</updated>
     
     <content type="html"><![CDATA[<p>JavaScript中在预编译后执行代码时对变量的查询分为LHS（Left-Hand-Side）查询和RHS(Right-Hand-Side)查询。</p>
 <hr>
@@ -813,6 +1034,8 @@ foo(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
     
     </summary>
     
+    
+      <category term="JavaScript" scheme="https://ontides.github.io/tags/JavaScript/"/>
     
   </entry>
   

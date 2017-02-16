@@ -21,7 +21,7 @@
 <meta property="og:url" content="https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/index.html">
 <meta property="og:site_name" content="Ontides's Blog">
 <meta property="og:description" content="JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展对作为整体的JavaScript的成功至关">
-<meta property="og:updated_time" content="2017-02-16T05:27:26.000Z">
+<meta property="og:updated_time" content="2017-02-16T05:42:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[译]《Understanding ECMAScript 6》——Introduction">
 <meta name="twitter:description" content="JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展对作为整体的JavaScript的成功至关">
@@ -72,12 +72,14 @@
         isCategory: false,
         fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
         scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
-        search: true
+        search: false
     }
 </script>
 
 
-    <script> yiliaConfig.jquery_ui = [false]; </script>
+    <script>
+        yiliaConfig.jquery_ui = [true, "//cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min.js", "//cdn.bootcss.com/jqueryui/1.10.4/css/jquery-ui.min.css"];
+    </script>
 
 
 
@@ -103,14 +105,9 @@
         </hgroup>
 
         
-
+        <p class="header-subtitle">Share my growth and thoughts</p>
         
-            <form id="search-form">
-            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
-            <i class="fa fa-times" onclick="resetSearch()"></i>
-            </form>
-            <div id="local-search-result"></div>
-            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+
         
 
 
@@ -132,11 +129,6 @@
                         </div>
                         
                         
-                        <div class="icon-wrap icon-me hide" data-idx="3">
-                            <div class="user"></div>
-                            <div class="shoulder"></div>
-                        </div>
-                        
                     </div>
                     
                 </div>
@@ -148,8 +140,6 @@
                         
                         <li>友情链接</li>
                         
-                        
-                        <li>关于我</li>
                         
                     </ul>
                 </div>
@@ -190,7 +180,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Web/">Web</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/读书笔记/">读书笔记</a></li></ul>
                     </div>
                 </section>
                 
@@ -201,20 +191,10 @@
                     
                       <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
                     
-                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
-                    
-                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
-                    
                     </div>
                 </section>
                 
 
-                
-                
-                <section class="switch-part switch-part4">
-                
-                    <div id="js-aboutme">专注于前端</div>
-                </section>
                 
             </div>
         </div>
@@ -235,6 +215,8 @@
             <hgroup>
               <h1 class="header-author"><a href="/" title="回到主页">Ontides</a></h1>
             </hgroup>
+            
+            <p class="header-subtitle">Share my growth and thoughts</p>
             
             <nav class="header-menu">
                 <ul>
@@ -296,6 +278,10 @@
         
 
         
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
+    </div>
+
         <div class="clearfix"></div>
       </div>
       
@@ -372,7 +358,7 @@
         <p><span>本文标题:</span><a href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
         <p><span>发布时间:</span>2016-10-17, 00:49:08</p>
-        <p><span>最后更新:</span>2017-02-16, 13:27:26</p>
+        <p><span>最后更新:</span>2017-02-16, 13:42:42</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/" title="[译]《Understanding ECMAScript 6》——Introduction">https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/</a>
             <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -500,7 +486,7 @@
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/JavaScript中的this/">JavaScript中的this</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/细说JavaScript作用域和闭包/">细说JavaScript作用域和闭包</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/03/JavaScript中的LHS查询和RHS查询/">JavaScript中的LHS查询和RHS查询</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/01/25/Web全栈之路——《Web全栈工程师的自我修养》读书笔记/">Web全栈之路——《Web全栈工程师的自我修养》读书笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/JavaScript中的this/">JavaScript中的this</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/细说JavaScript作用域和闭包/">细说JavaScript作用域和闭包</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/03/JavaScript中的LHS查询和RHS查询/">JavaScript中的LHS查询和RHS查询</a></li></ul>
 
 
 
@@ -546,6 +532,19 @@
 <script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
 
 
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-92066952-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
 
 
 
