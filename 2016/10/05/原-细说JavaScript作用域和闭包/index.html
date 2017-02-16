@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Ontides" />
+
+
+
+<meta name="description" content="还记得最开始接触JavaScript时，只是会用document.getElementById(&amp;quot;&amp;quot;)这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[原]细说JavaScript作用域和闭包">
+<meta property="og:url" content="https://ontides.github.io/2016/10/05/原-细说JavaScript作用域和闭包/index.html">
+<meta property="og:site_name" content="Ontides's Blog">
+<meta property="og:description" content="还记得最开始接触JavaScript时，只是会用document.getElementById(&amp;quot;&amp;quot;)这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认">
+<meta property="og:updated_time" content="2017-02-16T05:24:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[原]细说JavaScript作用域和闭包">
+<meta name="twitter:description" content="还记得最开始接触JavaScript时，只是会用document.getElementById(&amp;quot;&amp;quot;)这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Ontides&#39;s Blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/me.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>[原]细说JavaScript作用域和闭包 | Ontides&#39;s Blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/me.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Ontides</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:ontidz@gmail.com" title="Email"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://zhihu.com/people/xie-wei-56-91-42" title="知乎"></a>
+                            
+                                <a class="fa Coding" href="https://coding.net/u/ontides" title="Coding"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Ontides</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/me.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Ontides</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:ontidz@gmail.com" title="Email"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://zhihu.com/people/xie-wei-56-91-42" title="知乎"></a>
+                            
+                                <a class="fa Coding" target="_blank" href="https://coding.net/u/ontides" title="Coding"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-原-细说JavaScript作用域和闭包" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/05/原-细说JavaScript作用域和闭包/" class="article-date">
+      <time datetime="2016-10-05T02:36:19.000Z" itemprop="datePublished">2016-10-05</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [原]细说JavaScript作用域和闭包
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>还记得最开始接触JavaScript时，只是会用<code>document.getElementById(&quot;&quot;)</code>这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认识到在前后端分离的时候，前端原来可以做到这么多东西，诸如模块，路由，依赖注入，双向绑定这样的词汇让我感到陌生而不知所措。即便是我已经在那个项目中使用AngularJS中上面所说的那些特性，我对AngularJS还是充满了困惑——我不清楚AngularJS是如何实现的。</p>
+<p>审视自己对JavaScript浅薄认识，我意识到自己应该去先把js语言本身好好学习一下。确实，在较为仔细地学习了ECMAScript后，我发现，我开始理解模块的实现，对如<code>.apply()</code>，<code>.bind()</code>等用法的了解让我对如何写出更好的js代码有了更多的理解。当然，现在我也只是入门水平，还需要不断学习和提高。</p>
+<p>这篇文章包含着我对javascript作用域和闭包的理解，写的过程也是整理和归纳的过程，以后也会用这种方式来归纳总结自己所学所想，希望自己能不断进步吧。</p>
+<hr>
+<div class="toc"><br><br><em>   </em>   <a href="#一javascript有哪些作用域类型">一JavaScript有哪些作用域类型</a><br>    <em>   <a href="#二作用域与标识符查询">二作用域与标识符查询</a>
+
+                </em>   <a href="#执行环境与作用域链">执行环境与作用域链</a><br>        <em>   <a href="#标识符查询">标识符查询</a>
+
+        </em>   <a href="#三可以形成独立作用域的结构">三可以形成独立作用域的结构</a><br><br>                <em>   <a href="#函数作用域">函数作用域</a>
+
+                        </em>   <a href="#利用函数内部对外部的隐藏">利用函数内部对外部的隐藏</a><br>            <em>   <a href="#匿名函数">匿名函数</a>
+
+                </em>   <a href="#块作用域">块作用域</a><br><br>                        <em>   <a href="#no-block-level-scopes">No Block-Level Scopes</a>
+            </em>   <a href="#with">with</a><br>            <em>   <a href="#trycatch">trycatch</a>
+            </em>   <a href="#letconst">letconst</a><br><br>        <em>   <a href="#四提升">四提升</a>
+
+                </em>   <a href="#提升的表现">提升的表现</a><br>        <em>   <a href="#提升的优先级">提升的优先级</a>
+        </em>   <a href="#提升的深层原因">提升的深层原因</a><br><br>        <em>   <a href="#五跨越词法作用域的两种机制">五跨越词法作用域的两种机制</a>
+
+                </em>   <a href="#eval">eval</a><br>        <em>   <a href="#with-1">with</a>
+
+        </em>   <a href="#六闭包与模块机制">六闭包与模块机制</a><br><br>                <em>   <a href="#闭包">闭包</a>
+
+                        </em>   <a href="#什么是闭包">什么是闭包</a><br>            <em>   <a href="#闭包相关的问题">闭包相关的问题</a>
+
+                                </em>   <a href="#问题">问题</a><br>                <em>   <a href="#解决办法">解决办法</a>
+
+                </em>   <a href="#模块机制">模块机制</a><br><br>                        <em>   <a href="#简单的模块">简单的模块</a>
+            </em>   <a href="#单例模式">单例模式</a><br>            *   <a href="#现代模块">现代模块</a><br></div>
+
+<hr>
+<h2 id="一、JavaScript有哪些作用域类型"><a href="#一、JavaScript有哪些作用域类型" class="headerlink" title="一、JavaScript有哪些作用域类型"></a>一、JavaScript有哪些作用域类型</h2><p>对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。</p>
+<p>词法作用域就是定义在词法阶段的作用域，当词法分析器处理代码的时候会保持作用域不变。在表现上，词法作用域的函数中遇到既不是形式参数也不是函数内部定义的局部变量的变量时，会自动去函数定义时的环境中查询（即沿作用域链）。</p>
+<p>还是举两个例子吧：</p>
+<pre><code>&lt;span class=&quot;hljs-comment&quot;&gt;//这是词法作用域&lt;/span&gt;
+&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
+    console.log(a);    &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
+}
+&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;;
+    foo();
+}
+&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
+bar();`&lt;/pre&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-comment&quot;&gt;//这是动态作用域&lt;/span&gt;
+&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
+    console.log(a);     &lt;span class=&quot;hljs-comment&quot;&gt;//3&lt;/span&gt;
+}
+&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;;
+    foo();
+}
+&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
+bar();`&lt;/pre&gt;
+
+## 二、作用域与标识符查询
+
+作用域和表示符查询紧密相关，表示符正是依靠这样一套严密的作用域规则而得以有条理地查询。而对于作用域，需要理解几个词：执行环境，变量对象，活动对象，作用域链。
+
+### 执行环境与作用域链
+
+首先解释执行环境吧，执行环境定义了在这个执行环境中变量或者函数有权访问的数据，决定了它们各自的行为。在js中执行环境的结构由全局执行环境和一级级内部嵌套的子执行环境组成。其中全局执行环境由ECMAScript实现所在的宿主环境决定，在浏览器中为window对象，在Node中是global对象。每个函数都包含着自己的执行环境，一个个执行环境组成了一个执行环境栈，当执行流进入一个函数时，该函数的执行环境会被推入环境栈中，函数执行之后该环境又会被从环境栈中弹出，这便是ECMAScript执行流的机制。
+
+每个执行环境都包含一个变量对象，它保存着环境中定义的所有变量和函数。当一个执行环境的代码执行的时候会为它的变量对象创建一个由当前执行环境沿着环境栈到全局执行环境的作用域链，作用域链保证了对当前执行环境有权访问的所有变量和函数的 **有序** 访问。如果当前执行环境是一个函数，那么该函数的活动对象就会成为这个执行环境的变量对象。
+
+而对除了全局执行环境外的执行对象，活动对象最前端是arguments对象，而作用域链沿着一层层的被包含环境的变量对象沿伸到全局执行环境的变量对象。
+
+### 标识符查询
+
+了解了执行环境和作用域链，标识符的查询就很好理解了，js引擎在遇到一个标识符的时候根据作用域链沿着变量对象从前端到后端进行查询（其实就是从子作用域逐层向父作用域查询），一旦遇到匹配的标识符便会**立即停止**。如：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;;
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
+        console.log(a);
+    }
+    a = &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;;
+    bar();
+}
+foo();  &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;`&lt;/pre&gt;
+
+该例中在console.log对a进行RHS查询时，在bar函数的作用域内便查询到了标识符a，因此便立即停止标识符查询，所以访问不到foo函数的标识符a。这种现象是标识符的遮蔽效应，在多层的嵌套作用域内可以定义同名的标识符，遮蔽效应使得内部的标识符可以遮蔽外层表示符。
+
+## 三、可以形成独立作用域的结构
+
+在JavaScript中，可以形成独立作用域的结构有两类，函数作用域和块作用域。先说说函数作用域吧。
+
+### 函数作用域
+
+函数作用域是js中最常见的作用域，每一个函数都拥有一个作用域，而属于这个函数的变量都能在整个函数的范围内访问（当然也能访问），但是在函数外则无法访问函数内的任何变量——除非你在函数执行时把一个闭包返回到函数体外。这种函数内部变量对外的隐藏作用使得同级作用域同名标识符之间的冲突得到避免，这样，也促成了模块机制的良好运行。
+
+#### 利用函数内部对外部的隐藏
+
+如果想创建一个封闭的作用域，让这个作用域内的变量不被外部访问，利用**立即执行函数表达式**（IIFE）便可实现。如：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;;
+(&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;IIFE&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
+    console.log(a); &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
+})();   &lt;span class=&quot;hljs-comment&quot;&gt;//立即执行&lt;/span&gt;
+console.log(a);     &lt;span class=&quot;hljs-comment&quot;&gt;//1&lt;/span&gt;`&lt;/pre&gt;
+
+这个函数表达式在声明后立即执行，这样函数体内的语句都得到了执行且对外部的变量没有影响。其实，JS中的模块也利用了这点。JS模块还是放到最后说吧。
+
+#### 匿名函数
+
+JavaScript中的函数表达式存在具名函数表达式和匿名函数表达式两种，而函数声明则必须具名。匿名函数有什么用呢？让我们不用去冥思苦想标识符怎么取。如上面的例子中的IIFE函数，该函数即使去掉函数名，程序也可以正常运行，因为它的函数名在这种情况起到作用不大。
+
+虽然匿名函数写起来十分便捷，但是基于以下原因，始终给每个函数命名是值得推荐的。 
+
+1\. 在没有函数名的情况下，函数的递归调用等需要引用自身的时候，将会不得不用`arguments.callee`进行引用，而这在ES5之后便不被推荐使用了——甚至在严格模式下会抛出TypeError错误。 
+
+2\. 函数名的省略使得代码可读性下降
+
+说到了匿名函数，不得不提闭包，由于闭包内容较多，将在后面专门说明。
+
+### 块作用域
+
+除了最常见的函数作用域，JavaScript中的块作用域也可以创建出一个独立的作用域。可是，在 Nicholas C.Zakas 著的《Professional JavaScript for Web Developers(3rd Edition)》中说道：
+
+&gt; #### No Block-Level Scopes
+</code></pre><blockquote>
+<pre><code>JavaScript’s lack of block-level scopes is a common source of confusion. In other C-like languages, code blocks enclosed by brackets have their own scope (more accurately described as their own execution context in ECMAScript), allowing conditional definition of variables.
+</code></pre></blockquote>
+<pre><code>Nicholas 之所以说JavaScript没有块级作用域是因为他没把`with`和`try/catch`作为块级作用域看待，他在书中把这两个情况作为延长作用域链的手段。实际上，通过`with`和`try/catch`创建的独立作用域也算是块级作用域的形式，除了这两种外还可以利用ES6中的`let`和`const`也可以形成块级作用域。
+
+#### with
+
+通过with可以创建出的作用域仅在with声明中使用。如：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; location = {
+    say: &lt;span class=&quot;hljs-string&quot;&gt;&apos;hello world&apos;&lt;/span&gt;
+};
+&lt;span class=&quot;hljs-keyword&quot;&gt;with&lt;/span&gt; (location){
+    console.log(say);&lt;span class=&quot;hljs-comment&quot;&gt;//hello world&lt;/span&gt;
+}
+console.log(say);&lt;span class=&quot;hljs-comment&quot;&gt;//抛出ReferenceError错误&lt;/span&gt;`&lt;/pre&gt;
+
+#### try/catch
+
+`try/catch`的catch分句会创建一个块级作用域，其中声明的变量只能在内部使用。如：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;try&lt;/span&gt;{
+    &lt;span class=&quot;hljs-keyword&quot;&gt;throw&lt;/span&gt; {
+        say: &lt;span class=&quot;hljs-string&quot;&gt;&apos;hello world&apos;&lt;/span&gt;
+    }
+}
+&lt;span class=&quot;hljs-keyword&quot;&gt;catch&lt;/span&gt;(error){
+    console.log(error.say);&lt;span class=&quot;hljs-comment&quot;&gt;//hello world&lt;/span&gt;
+}
+console.log(error.say);&lt;span class=&quot;hljs-comment&quot;&gt;////抛出ReferenceError错误&lt;/span&gt;`&lt;/pre&gt;
+
+#### let/const
+
+ES6中引入的let和const关键字可以将变量绑定到任意由{}包含的代码块中。 
+
+以下例子可以看出用let声明变量和用var声明变量的区别：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-comment&quot;&gt;//变量用var声明&lt;/span&gt;
+&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;; i &amp;lt; &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;; i++){
+    console.log(i);
+}
+console.log(i);&lt;span class=&quot;hljs-comment&quot;&gt;//5&lt;/span&gt;
+
+&lt;span class=&quot;hljs-comment&quot;&gt;//变量用let声明&lt;/span&gt;
+&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; j = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;; j &amp;lt; &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;; j++){
+    console.log(j);
+}
+console.log(j);&lt;span class=&quot;hljs-comment&quot;&gt;//抛出ReferenceError错误&lt;/span&gt;`&lt;/pre&gt;
+
+当然，也可以直接绑定在块中，如：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`{
+    &lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;10&lt;/span&gt;;
+    console.log(a);&lt;span class=&quot;hljs-comment&quot;&gt;//10&lt;/span&gt;
+}
+console.log(a);抛出&lt;span class=&quot;hljs-built_in&quot;&gt;ReferenceError&lt;/span&gt;错误`&lt;/pre&gt;
+
+const关键字定义的常量和let一样，能将其定义的常量绑定到{}包含的块级作用域中，就再举例子了。
+
+## 四、提升
+
+提升的概念比较简单，但是如果对js语言只是浅尝辄止的话，可能会理解不清。这里通过提升的表现，优先级和原因来简单说明js中的提升。
+
+### 提升的表现
+
+提升是变量或函数在同个作用域内表现出的可以先使用后定义的现象。先来看看变量提升：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-pi&quot;&gt;&quot;use strict&quot;&lt;/span&gt;;&lt;span class=&quot;hljs-comment&quot;&gt;//开启ES5的严格模式&lt;/span&gt;
+a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
+&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a;
+console.log(a);&lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;`&lt;/pre&gt;
+
+再看看函数提升：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-pi&quot;&gt;&quot;use strict&quot;&lt;/span&gt;;
+foo(&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;);&lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
+&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(n)&lt;/span&gt;{&lt;/span&gt;
+    console.log(n+&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;);
+}`&lt;/pre&gt;
+
+### 提升的优先级
+
+提升具有优先级，当一个作用域里对同个标识符既使用了变量声明，也使用了函数声明，那么函数声明会优先被提升。如下面的例子。 
+
+&lt;a&gt;&lt;/a&gt;
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`foo();&lt;span class=&quot;hljs-comment&quot;&gt;//1&lt;/span&gt;
+&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; foo;
+&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    console.log(&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;);
+}
+foo = &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    console.log(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
+}`&lt;/pre&gt;
+
+### 提升的深层原因
+
+提升之所以存在，是因为JavaScript引擎在对代码解释前会进行预编译。在编译阶段，有一部分的工作就是找到所有的函数声明，并用合适的作用域把它们关联起来，这也是词法作用域的核心部分。有了预编译，在解释执行时，不再检测变量的声明，引擎在对变量进行LHS或RHS查询时会直接向编译阶段生成的作用域取得数据。
+
+也就是说对于`var a = 1’;`这个语句来说，js引擎会识别为两个声明，即`var a` 和`a = 1`，他们分别在编译阶段和执行阶段处理。
+
+## 五、跨越词法作用域的两种机制
+
+虽然JavaScript采用的是词法作用域，但是如果真的想要在代码执行的时候修改作用域的话也是有办法的，因为js中存在两个”bug”来做到这点。这两个”bug”是传说中的`eval`还有之前提到过的`with`。由于这两个”bug”，js的作用域应该算是不完全的词法作用域。
+
+### eval
+
+eval可能是js中最强大的函数了，它接受一个参数即一个字符串，在执行时会把这个字符串作为实际的ECMA语句插入到原位置进行解析执行，正如下面例子所示。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(str)&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-built_in&quot;&gt;eval&lt;/span&gt;(str);
+    console.log(a);
+}
+a = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;;
+&lt;span class=&quot;hljs-comment&quot;&gt;//修改了foo函数体内的词法作用域&lt;/span&gt;
+foo(&lt;span class=&quot;hljs-string&quot;&gt;&apos;var a = 2;&apos;&lt;/span&gt;);&lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;`&lt;/pre&gt;
+
+因为在js编译器预编译的时候，eval()中的语句并不会被执行，所以，eval()中的变量或者函数不会被提升。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`foo();&lt;span class=&quot;hljs-comment&quot;&gt;//抛出ReferenceError错误&lt;/span&gt;
+&lt;span class=&quot;hljs-built_in&quot;&gt;eval&lt;/span&gt;(&lt;span class=&quot;hljs-string&quot;&gt;&quot;function foo(){console.log(&apos;1&apos;);}&quot;&lt;/span&gt;);`&lt;/pre&gt;
+
+当然，如果变量/函数的定义和使用都在eval中，那么里面的变量对于里面的调用来说是有提升的，比如:
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-built_in&quot;&gt;eval&lt;/span&gt;(&lt;span class=&quot;hljs-string&quot;&gt;&quot;foo();function foo(){console.log(&apos;1&apos;);}&quot;&lt;/span&gt;);&lt;span class=&quot;hljs-comment&quot;&gt;//1&lt;/span&gt;`&lt;/pre&gt;
+
+JavaScript中还有一些类似`eval()`处理方式的函数，比如`new Function(..)`，`setInterval(..)`和`setTimeout(..)`等等。
+
+### with
+
+with语句同样可以在执行阶段修改作用域。 
+
+如
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; obj = {
+    a: &lt;span class=&quot;hljs-string&quot;&gt;&apos;a&apos;&lt;/span&gt;,
+    b: &lt;span class=&quot;hljs-string&quot;&gt;&apos;b&apos;&lt;/span&gt;,
+    c: &lt;span class=&quot;hljs-string&quot;&gt;&apos;c&apos;&lt;/span&gt;
+};
+&lt;span class=&quot;hljs-keyword&quot;&gt;with&lt;/span&gt; (obj){
+    console.log(a+b+c);&lt;span class=&quot;hljs-comment&quot;&gt;//abc&lt;/span&gt;
+}`&lt;/pre&gt;
+
+在with语句的代码块里面，a,b,c来自obj的三个属性，这个在js预编译的时候也是不能判断的，因此with语句中的变量也不能在词法阶段确定。
+
+## 六、闭包与模块机制
+
+### 闭包
+
+说起闭包，在我刚接触JavaScript的时候听到这个词的时候感觉它特别神秘——从这个奇怪的名字就感觉到了神秘感。直到深入了解后才发现，闭包，原来是这样。
+
+#### 什么是闭包
+
+当一个函数能够保存自己所在的词法作用域的时，便产生了闭包——无论这个是在当前词法作用域中还是当前词法作用域外。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+        console.log(a);
+    }
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; bar;
+}
+&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; baz = foo();
+baz();&lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;`&lt;/pre&gt;
+
+在上面的例子中，在调用foo函数时bar函数保存着foo函数的局部变量a，在bar函数被返回到foo函数外面的时候，便产生了闭包，闭包里保存着bar所在的词法作用域（包含bar函数和foo函数的所有变量以及全局对象的所有属性），故调用baz函数的时候能够正常返回a中的值2。
+
+#### 闭包相关的问题
+
+##### 问题
+
+首先看下面的例子:
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt;(&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;; i &amp;lt;= &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;; i++){
+    setTimeout(&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+        console.log(i);
+    },&lt;span class=&quot;hljs-number&quot;&gt;1000&lt;/span&gt;);
+}`&lt;/pre&gt;
+
+这个例子中可以看出这段代码预期是按顺序分别输出1～5的数字。而实际上，每次都输出6。
+
+现仔细造成这个”出乎意料“的现象的原因：setTimeout函数中传进来的timer函数由于作用域闭包的原因，保存着对**同一个**变量 i 的引用，而在循环结束后i的值为6，又由于js的异步性，在过1000ms之后，循环已经处理结束，因此，结果会输出5个6。
+
+##### 解决办法
+
+只需对上面代码进行一些改进即可解决，代码如下：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;; i &amp;lt;= &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;; i++){
+    (&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(i)&lt;/span&gt;{&lt;/span&gt;
+        setTimeout(&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+            console.log(i);
+        },&lt;span class=&quot;hljs-number&quot;&gt;1000&lt;/span&gt;);
+    })(i)
+}`&lt;/pre&gt;
+
+上面代码通过创建一个自执行的函数表达式来得到一个独立的作用域，再把外部的i作为参数传进函数体，因为函数的参数传递会创建一个副本，所以每个timer中保存不同的i的副本，问题就得到解决了。
+
+### 模块机制
+
+JavaScript中的模块模式正是充分利用了作用域闭包的能力而实现的。下面由简入深地描述js中的模块机制。
+
+#### 简单的模块
+
+有了闭包的知识的话，下面的模块代码相信能很快看懂。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;myModule&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; message = &lt;span class=&quot;hljs-string&quot;&gt;&quot;hello,Ontides&quot;&lt;/span&gt;;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; resp = &lt;span class=&quot;hljs-string&quot;&gt;&quot;Hi,&quot;&lt;/span&gt;;
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+        console.log(message);
+    }
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;getResponse&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name)&lt;/span&gt;{&lt;/span&gt;
+        console.log(resp+name);
+    }
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; {
+        sayHello: sayHello,
+        getResponse: getResponse
+    };
+}
+&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; foo = myModule();
+
+foo.sayHello(); &lt;span class=&quot;hljs-comment&quot;&gt;//Hello,Ontides&lt;/span&gt;
+foo.getResponse(&lt;span class=&quot;hljs-string&quot;&gt;&quot;Scott&quot;&lt;/span&gt;);   &lt;span class=&quot;hljs-comment&quot;&gt;//Hi,Scott&lt;/span&gt;`&lt;/pre&gt;
+
+#### 单例模式
+
+将上面代码改变一下，可以实现单例模式：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; foo = (&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;myModule&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; message = &lt;span class=&quot;hljs-string&quot;&gt;&quot;hello,Ontides&quot;&lt;/span&gt;;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; resp = &lt;span class=&quot;hljs-string&quot;&gt;&quot;Hi,&quot;&lt;/span&gt;;
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+        console.log(message);
+    }
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;getResponse&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name)&lt;/span&gt;{&lt;/span&gt;
+        console.log(resp+name);
+    }
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; {
+        sayHello: sayHello,
+        getResponse: getResponse
+    };
+})();
+foo.sayHello(); &lt;span class=&quot;hljs-comment&quot;&gt;//Hello,Ontides&lt;/span&gt;
+foo.getResponse(&lt;span class=&quot;hljs-string&quot;&gt;&quot;Scott&quot;&lt;/span&gt;);   &lt;span class=&quot;hljs-comment&quot;&gt;//Hi,Scott&lt;/span&gt;`&lt;/pre&gt;
+
+#### 现代模块
+
+现在实现的模块通常需要一个模块管理器，其一般实现如下：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; myModules = (&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;Manager&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; modules = {};
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name, deps, impl)&lt;/span&gt;{&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;; i &amp;lt; deps.length; i++){
+            deps[i] = modules[deps[i]]; &lt;span class=&quot;hljs-comment&quot;&gt;//获取模块依赖&lt;/span&gt;
+        }
+        modules[name] = impl.apply(impl, deps);&lt;span class=&quot;hljs-comment&quot;&gt;//将依赖注入到定义的模块中&lt;/span&gt;
+    }
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name)&lt;/span&gt;{&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; modules[name];
+    }
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; {
+        define: define,
+        get: get
+    }
+})();`&lt;/pre&gt;
+
+这个模块管理器的实现中，`deps[i] = modules[deps[i]];`语句根据目标定义模块所需要的依赖从modules中查询，而`modules[name] = impl.apply(impl, deps);`语句则将目标依赖注入到定义模块中。
+
+通过上面的模块管理器，可以轻松创建模块，管理模块之间的依赖。
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`myModules.define(&lt;span class=&quot;hljs-string&quot;&gt;&quot;bar&quot;&lt;/span&gt;,[],&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name)&lt;/span&gt;{&lt;/span&gt;
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&quot;Hello,&quot;&lt;/span&gt;+name;
+    }
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt;{
+        sayHello: sayHello
+    }
+});
+
+myModules.define(&lt;span class=&quot;hljs-string&quot;&gt;&quot;foo&quot;&lt;/span&gt;,[&lt;span class=&quot;hljs-string&quot;&gt;&quot;bar&quot;&lt;/span&gt;],&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(bar)&lt;/span&gt;{&lt;/span&gt;
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; person = &lt;span class=&quot;hljs-string&quot;&gt;&quot;Ontides&quot;&lt;/span&gt;;
+    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;awsome&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
+        console.log(bar.sayHello(person).toUpperCase());
+    }
+    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt;{
+        awsome: awsome
+    }
+});
+
+&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; bar = myModules.get(&lt;span class=&quot;hljs-string&quot;&gt;&quot;bar&quot;&lt;/span&gt;);
+&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; foo = myModules.get(&lt;span class=&quot;hljs-string&quot;&gt;&quot;foo&quot;&lt;/span&gt;);
+
+console.log(bar.sayHello(&lt;span class=&quot;hljs-string&quot;&gt;&quot;Ontides&quot;&lt;/span&gt;));&lt;span class=&quot;hljs-comment&quot;&gt;//Hello,Ontides&lt;/span&gt;
+foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span&gt;
+
+        &lt;div&gt;
+            作者：ontides 发表于2016/10/5 10:36:19 [原文链接](http://blog.csdn.net/ontides/article/details/52737669)
+        &lt;/div&gt;
+        &lt;div&gt;
+        阅读：632 评论：0 [查看评论](http://blog.csdn.net/ontides/article/details/52737669#comments)
+        &lt;/div&gt;
+</code></pre>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/10/05/原-细说JavaScript作用域和闭包/">[原]细说JavaScript作用域和闭包</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
+        <p><span>发布时间:</span>2016-10-05, 10:36:19</p>
+        <p><span>最后更新:</span>2017-02-16, 13:24:45</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/05/原-细说JavaScript作用域和闭包/" title="[原]细说JavaScript作用域和闭包">https://ontides.github.io/2016/10/05/原-细说JavaScript作用域和闭包/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/10/05/原-细说JavaScript作用域和闭包/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">
+                    [译]《Understanding ECMAScript 6》——Introduction
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/10/03/原-JavaScript中的LHS查询和RHS查询/">
+                    [原]JavaScript中的LHS查询和RHS查询
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、JavaScript有哪些作用域类型"><span class="toc-number">1.</span> <span class="toc-text">一、JavaScript有哪些作用域类型</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"[原]细说JavaScript作用域和闭包　| Ontides's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'https://ontides.github.io/2016/10/05/原-细说JavaScript作用域和闭包/';
+            this.page.identifier = '2016/10/05/原-细说JavaScript作用域和闭包/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//ontides.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/" title="上一篇: [译]《Understanding ECMAScript 6》——Introduction">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/10/03/原-JavaScript中的LHS查询和RHS查询/" title="下一篇: [原]JavaScript中的LHS查询和RHS查询">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/原-JavaScript中的this/">[原]JavaScript中的this</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/原-细说JavaScript作用域和闭包/">[原]细说JavaScript作用域和闭包</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/03/原-JavaScript中的LHS查询和RHS查询/">[原]JavaScript中的LHS查询和RHS查询</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 Ontides
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

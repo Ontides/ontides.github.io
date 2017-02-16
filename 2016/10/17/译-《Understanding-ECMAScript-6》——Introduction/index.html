@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Ontides" />
+
+
+
+<meta name="description" content="《理解 ECMAScript 6》——简介JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[译]《Understanding ECMAScript 6》——Introduction">
+<meta property="og:url" content="https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/index.html">
+<meta property="og:site_name" content="Ontides's Blog">
+<meta property="og:description" content="《理解 ECMAScript 6》——简介JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展">
+<meta property="og:updated_time" content="2017-02-16T05:24:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[译]《Understanding ECMAScript 6》——Introduction">
+<meta name="twitter:description" content="《理解 ECMAScript 6》——简介JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Ontides&#39;s Blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/me.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>[译]《Understanding ECMAScript 6》——Introduction | Ontides&#39;s Blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/me.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Ontides</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:ontidz@gmail.com" title="Email"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://zhihu.com/people/xie-wei-56-91-42" title="知乎"></a>
+                            
+                                <a class="fa Coding" href="https://coding.net/u/ontides" title="Coding"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Ontides</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/me.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Ontides</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:ontidz@gmail.com" title="Email"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://zhihu.com/people/xie-wei-56-91-42" title="知乎"></a>
+                            
+                                <a class="fa Coding" target="_blank" href="https://coding.net/u/ontides" title="Coding"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-译-《Understanding-ECMAScript-6》——Introduction" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/" class="article-date">
+      <time datetime="2016-10-16T16:49:08.000Z" itemprop="datePublished">2016-10-17</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [译]《Understanding ECMAScript 6》——Introduction
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="《理解-ECMAScript-6》——简介"><a href="#《理解-ECMAScript-6》——简介" class="headerlink" title="《理解 ECMAScript 6》——简介"></a>《理解 ECMAScript 6》——简介</h1><p>JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展对作为整体的JavaScript的成功至关重要，而这本书包含了这个语言近来最重要的更新——ECMAScript6的诸多改变。</p>
+<h2 id="一、走向-ECMAScript-6"><a href="#一、走向-ECMAScript-6" class="headerlink" title="一、走向 ECMAScript 6"></a>一、走向 ECMAScript 6</h2><p>2007年，JavaScript处在一个发展的关键时刻。当饱受欢迎的Ajax引领着动态Web应用的新时代时，JavaScript自从1999年第三版的ECMA-262发布后一直没有变化。作为负责推动ECMAScript发展进程的委员会，TC-39为 ECMAScript 4 制定了大量的规范草案。新的特性包括新语法、模块、类、类的继承、对象私有变量，以及可选类型注释等等。</p>
+<p>ECMAScript 4中大量的改动造成了TC-39内部的分歧，一些成员觉得第四版想要做的太多了。来自雅虎、谷歌和微软的核心成员为下一版本的ECMAScirpt给出了一个替代性的提议，这个版本最初叫做 ECMAScript 3.1。“3.1”主要是为了表明它只是为现有标准增加一些功能的版本。</p>
+<p>ECMAScirpt 3.1 提供了非常少的语法改变，相反，它主要专注于属性，原生JSON对象的支持和给现有的对象增加方法。虽然起初尝试着去整合ECMAScript 3.1和ECMAScript 4，但是由于两方阵营对语言的发展的意见无法达成一致，这个尝试最终失败了。</p>
+<p>到了2008年的时候，Brendan Eich，JavaScript的创造者，宣布TC-39将会专注于制定ECMAScript 3.1标准。他们会在下个版本的ECMAScript标准化前搁置ECMAScript 4中主要语法和特性的修改，并且委员会中所有成员都会努力将ECMAScript 3.1和ECMAScript 4中最精华的部分融合到一个名为“ECMAScript Harmony（和谐）”的版本中。</p>
+<p>最终，ECMAScript3.1成为了ECMA-262的第5个版本的标准，也被称为ECMAScript 5。委员会为了避免和现有已经搁置的规范同名，没有发布ECMAScript 4标准，随后工作便专向ECMAScript Harmony，ECMAScript 6成为了在“和谐”精神下的第一个发布的标准。</p>
+<p>ECMAScript 6（简称ES6）的所有特性在2015年的时候完全完成，并且被正式赋予了“ECMAscript 2015”的名字（不过在本书中依然还会用ECMAScript 6来指代它，因为这个名字对开发者最为熟悉）。ES6的语言特性有着广泛的变动，如全新的对象和模式，语法本身，现有对象的新方法。ECMAScript 6中最激动人心的是，它所有的改变都是为了解决开发者们实际遇到的问题。</p>
+<h2 id="二、关于这本书"><a href="#二、关于这本书" class="headerlink" title="二、关于这本书"></a>二、关于这本书</h2><p>良好地理解ECMAScript 6特性是所有JavaScript开发者们前行重要的一步。包含在ECMAScript 6中的语言特性代表了在可预见的未来搭建JavaScript应用的基础，这也正是这本书所要讲述的。我希望你能通过阅读这本书学习ECMAScript 6的新特性，并在在你需要的时候开始使用它们。</p>
+<h3 id="浏览器和Node-js的兼容性"><a href="#浏览器和Node-js的兼容性" class="headerlink" title="浏览器和Node.js的兼容性"></a>浏览器和Node.js的兼容性</h3><p>很多的JavaScript环境，如网页浏览器和Node.js，都正在积极地努力实现ECMAScript 6.这本书不会去阐述各个环境实现不完全的兼容性问题，而专注阐明于那些在规范中定义为正确的行为。因此，你的JavaScript环境的行为可能和这本书中描述的不同。</p>
+<h3 id="本书适用人群"><a href="#本书适用人群" class="headerlink" title="本书适用人群"></a>本书适用人群</h3><p>这本书面向那些熟悉JavaScript和ECMAScript5的读者。如果要对语言有深层次的认识的话不一定要使用这本书，这本书的目的是帮助你理解ECMAScript5和ECMAScript6之间的不同。更准确地说，这本书的目标读者是那些在浏览器或者Node.js环境中编程并且想学习语言最新进展的中高级JavaScript开发者。</p>
+<p>这本书不适合那些从未写过JavaScript的初学者。要理解这本书，你需要拥有对语言有一个很好的基本理解。</p>
+<h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>这本书十三章中的每一章各包含了ECMAScript 6中的一个方面。为了让你更加深刻地理解这些改变，很多章节都从讨论ECMAScript 6 想要解决的问题开始，并且所有章节都包含了代码示例来帮助你学习新的语法和概念。</p>
+<p><strong>第1章：块绑定是怎样工作的</strong> 讨论用以替代<code>var</code>的<code>let</code>和<code>const</code>。</p>
+<p><strong>第2章：字符串和正则表达式</strong> 包含了新增加的字符串操控和检查功能，还有模板字符串的介绍。</p>
+<p><strong>第3章：ECMAScript 6中的函数</strong> 讨论了有关函数的一些变动，包含了箭头函数形式（arrow function form）、默认值参数（default parameters）、剩余参数（rest parameters）等等。</p>
+<p><strong>第4章：对象函数的扩展</strong> 介绍了对象创建，修改，使用方式的变动。讨论话题包含对象字面量语法的改变和新的反射方法。</p>
+<p><strong>第5章：为更简单的数据访问解构</strong> 介绍了对象和数组的解构（destructuring），它让你能够用简明的语法解构对象和数组</p>
+<p><strong>第6章：symbols和symbol属性</strong> 介绍了symbols的概念，这是定义属性的一个全新的方法。symbols是一个新的原始类型，它可以用来遮掩（obscure）（但不是隐藏（hide））对象属性和方法。</p>
+<p><strong>第7章：Sets和Maps</strong> 详细阐述了全新的集合类型：<code>Set</code>、<code>WeakSet</code>、<code>Map</code> 和 <code>WeakMap</code>。这些类型通过增加语义，删除重复内容和特别为JavaScript设计的内存管理的方式扩展了数组。</p>
+<p><strong>第8章：迭代器和生成器</strong> 讨论了语言中新增的迭代器和生成器。这些特性让你用有效的方式处理数据，而这在之前版本的JavaScript中难以做到</p>
+<p><strong>第9章：介绍JavaScript中的类</strong> 介绍了JavaScript中第一个正式的“类”的概念。那些其他语言转到JavaScript的人常常对此（ES5及更早的JavaScript中没有“类”）感到困惑，而JavaScript类的语法的加入让JavaScript对其他人和爱好者们更加简明而友好。</p>
+<p><strong>第10章：改进功能的数组</strong> 详述了原生数组的变动和在JavaScript中使用它们的全新方式</p>
+<p><strong>第11章：Promises和异步编程</strong> 介绍了作为这个语言一部分的promises。promises作为基础特性已经被第三方类库广泛地支持，而ECMAScript 6开始将它规范化并默认地支持了它。</p>
+<p><strong>第12章：代理和反射API</strong> 介绍了规范化的JavaScript反射（Reflection）API和新的代理对象，代理对象能让你拦截对一个对象的所有操作。代理让开发者拥有对对象史无前例的控制，也因此让定义全新交互模式有了无限可能。</p>
+<p><strong>第13章：用模块封装代码</strong> 详细阐述了JavaScript官方的模块形式，目的是为了让这些模块能取代以前出现各种各样的模块定义形式</p>
+<p><strong>附录A：一些细小的ECMAScript 6变动</strong> 包含了其他在ECMAScript 6中的变动，通常是那些你不常使用的或者那些不适合放到前几章的主要话题中的变动。</p>
+<p><strong>附录B：理解ECMAScript 7（2016）</strong> 阐述了应用到ECMAScript 7标准中的两个新增项，它们不拥有ECMAScript 6那样有影响力。</p>
+<h3 id="使用约定"><a href="#使用约定" class="headerlink" title="使用约定"></a>使用约定</h3><p>本书将使用如下的排版约定：</p>
+<ul>
+<li><em>斜体</em> 表示新的术语</li>
+<li><code>Constant width</code> 表示一段代码或者文件名</li>
+</ul>
+<p>此外，长代码示例将会放在固定宽度的代码块中，如</p>
+<pre><code>&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;doSomething&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
+    &lt;span class=&quot;hljs-comment&quot;&gt;// empty&lt;/span&gt;
+}`&lt;/pre&gt;
+
+在一个代码块中, 在 `console.log()` 右边的注释代表代码运行时你将在浏览器或者Node.js控制台看到的输出结果，比如：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`console.log(&lt;span class=&quot;hljs-string&quot;&gt;&quot;Hi&quot;&lt;/span&gt;);      &lt;span class=&quot;hljs-comment&quot;&gt;// &quot;Hi&quot;&lt;/span&gt;`&lt;/pre&gt;
+
+如果一个代码块中的某一行抛出了错误，会在该行代码的右边看到如下的注释：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`doSomething();          &lt;span class=&quot;hljs-comment&quot;&gt;// error!&lt;/span&gt;
+</code></pre><h3 id="帮助与支持"><a href="#帮助与支持" class="headerlink" title="帮助与支持"></a>帮助与支持</h3><p>你可以通过访问 <a href="https://github.com/nzakas/understandinges6">https://github.com/nzakas/understandinges6</a> 提出问题，给出修正的建议，反对书中的内容</p>
+<p>你读了本书后如果有任何疑问，请给我的邮件列表发送消息 <a href="http://groups.google.com/group/zakasbooks">http://groups.google.com/group/zakasbooks</a>.</p>
+<h2 id="三、感谢"><a href="#三、感谢" class="headerlink" title="三、感谢"></a>三、感谢</h2><p>感谢 Jennifer Griffith-Delgado, Alison Law，和No Starch出版社的所有人对这本书的支持和帮助。他们对我在生病期间缓慢的写作速度给予了理解和耐心，这是我永远也不会忘记的。</p>
+<p>I我很感谢作为技术编辑 Juriy Zaytsev 的关注，还有 Axel Rauschmayer 博士的反馈和几段谈话，这些谈话让我对书中所讨论的概念的理解更加清晰。</p>
+<p>感谢在Github上为这本书提交修改的每一个人：ShMcK, Ronen Elster, Rick Waldron, blacktail, Paul Salaets, Lonniebiz, Igor Skuhar, jakub-g, David Chang, Kevin Sweeney, Kyle Simpson, Peter Bakondy, Philip Borisov, Shaun Hickson, Steven Foote, kavun, Dan Kielp, Darren Huskie, Jakub Narębski, Jamund Ferguson, Josh Lubaway, Marián Rusnák, Nikolas Poniros, Robin Pokorný, Roman Lo, Yang Su, alexyans, robertd, 404, Aaron Dandy, AbdulFattah Popoola, Adam Richeimer, Ahmad Ali, Aleksandar Djindjic, Arjunkumar, Ben Regenspan, Carlo Costantini, Dmitri Suvorov, Kyle Pollock, Mallory, Erik Sundahl, Ethan Brown, Eugene Zubarev, Francesco Pongiluppi, Jake Champion, Jeremy Caney, Joe Eames, Juriy Zaytsev, Kale Worsley, Kevin Lozandier, Lewis Ellis, Mohsen Azimi, Navaneeth Kesavan, Nick Bottomley, Niels Dequeker, Pahlevi Fikri Auliya, Prayag Verma, Raj Anand, Ross Gerbasi, Roy Ling, Sarbbottam Bandyopadhyay和Shidhin.</p>
+<p>还有，感谢每一位在Patreon: Casey Visco上支持这本书的人。</p>
+<hr>
+<p>原文地址：<a href="https://github.com/nzakas/understandinges6/blob/master/manuscript/00-Introduction.md">Understanding ECMAScript 6: Introduction</a></p>
+<pre><code>&lt;div&gt;
+    作者：ontides 发表于2016/10/17 0:49:08 [原文链接](http://blog.csdn.net/ontides/article/details/52834577)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：351 评论：0 [查看评论](http://blog.csdn.net/ontides/article/details/52834577#comments)
+&lt;/div&gt;
+</code></pre>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
+        <p><span>发布时间:</span>2016-10-17, 00:49:08</p>
+        <p><span>最后更新:</span>2017-02-16, 13:24:45</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/" title="[译]《Understanding ECMAScript 6》——Introduction">https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2016/11/08/原-JavaScript中的this/">
+                    [原]JavaScript中的this
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/10/05/原-细说JavaScript作用域和闭包/">
+                    [原]细说JavaScript作用域和闭包
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#《理解-ECMAScript-6》——简介"><span class="toc-number">1.</span> <span class="toc-text">《理解 ECMAScript 6》——简介</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、走向-ECMAScript-6"><span class="toc-number">1.1.</span> <span class="toc-text">一、走向 ECMAScript 6</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、关于这本书"><span class="toc-number">1.2.</span> <span class="toc-text">二、关于这本书</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#浏览器和Node-js的兼容性"><span class="toc-number">1.2.1.</span> <span class="toc-text">浏览器和Node.js的兼容性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#本书适用人群"><span class="toc-number">1.2.2.</span> <span class="toc-text">本书适用人群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#概览"><span class="toc-number">1.2.3.</span> <span class="toc-text">概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用约定"><span class="toc-number">1.2.4.</span> <span class="toc-text">使用约定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#帮助与支持"><span class="toc-number">1.2.5.</span> <span class="toc-text">帮助与支持</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、感谢"><span class="toc-number">1.3.</span> <span class="toc-text">三、感谢</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"[译]《Understanding ECMAScript 6》——Introduction　| Ontides's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/';
+            this.page.identifier = '2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//ontides.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2016/11/08/原-JavaScript中的this/" title="上一篇: [原]JavaScript中的this">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/10/05/原-细说JavaScript作用域和闭包/" title="下一篇: [原]细说JavaScript作用域和闭包">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/原-JavaScript中的this/">[原]JavaScript中的this</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/原-细说JavaScript作用域和闭包/">[原]细说JavaScript作用域和闭包</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/03/原-JavaScript中的LHS查询和RHS查询/">[原]JavaScript中的LHS查询和RHS查询</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 Ontides
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

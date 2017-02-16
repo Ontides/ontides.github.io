@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Ontides" />
+
+
+
+<meta name="description" content="《理解 ECMAScript 6》第一章：块绑定
+   理解 ECMAScript 6第一章块绑定
+
+           1 变量声明和提升       2 块级声明
+
+                   21 let声明           22 没有重复声明
+           23 常量声明                           const声明和let声明">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings">
+<meta property="og:url" content="https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/index.html">
+<meta property="og:site_name" content="Ontides's Blog">
+<meta property="og:description" content="《理解 ECMAScript 6》第一章：块绑定
+   理解 ECMAScript 6第一章块绑定
+
+           1 变量声明和提升       2 块级声明
+
+                   21 let声明           22 没有重复声明
+           23 常量声明                           const声明和let声明">
+<meta property="og:updated_time" content="2017-02-16T05:24:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings">
+<meta name="twitter:description" content="《理解 ECMAScript 6》第一章：块绑定
+   理解 ECMAScript 6第一章块绑定
+
+           1 变量声明和提升       2 块级声明
+
+                   21 let声明           22 没有重复声明
+           23 常量声明                           const声明和let声明">
+
+<link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="Ontides&#39;s Blog" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/me.jpg">
+
+
+
+    <link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet">
+
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings | Ontides&#39;s Blog</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: true
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/img/me.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Ontides</a></h1>
+        </hgroup>
+
+        
+
+        
+            <form id="search-form">
+            <input type="text" id="local-search-input" name="q" placeholder="search..." class="search form-control" autocomplete="off" autocorrect="off" searchonload="false" />
+            <i class="fa fa-times" onclick="resetSearch()"></i>
+            </form>
+            <div id="local-search-result"></div>
+            <p class='no-result'>No results found <i class='fa fa-spinner fa-pulse'></i></p>
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:ontidz@gmail.com" title="Email"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" href="https://zhihu.com/people/xie-wei-56-91-42" title="知乎"></a>
+                            
+                                <a class="fa Coding" href="https://coding.net/u/ontides" title="Coding"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://moxfive.xyz/">MOxFIVE</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">专注于前端</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Ontides</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/img/me.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Ontides</a></h1>
+            </hgroup>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:ontidz@gmail.com" title="Email"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa 知乎" target="_blank" href="https://zhihu.com/people/xie-wei-56-91-42" title="知乎"></a>
+                            
+                                <a class="fa Coding" target="_blank" href="https://coding.net/u/ontides" title="Coding"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/" class="article-date">
+      <time datetime="2016-11-17T04:32:43.000Z" itemprop="datePublished">2016-11-17</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [译]《Understanding ECMAScript 6》Chapter 1：Block Bindings
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+
+        
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <h1 id="《理解-ECMAScript-6》第一章：块绑定"><a href="#《理解-ECMAScript-6》第一章：块绑定" class="headerlink" title="《理解 ECMAScript 6》第一章：块绑定"></a>《理解 ECMAScript 6》第一章：块绑定</h1><hr>
+<div class="toc"><br><br><em>   <a href="#理解-ecmascript-6第一章块绑定">理解 ECMAScript 6第一章块绑定</a>
+
+        </em>   <a href="#11-变量声明和提升">1 变量声明和提升</a><br>    <em>   <a href="#12-块级声明">2 块级声明</a>
+
+                </em>   <a href="#121-let声明">21 let声明</a><br>        <em>   <a href="#122-没有重复声明">22 没有重复声明</a>
+        </em>   <a href="#123-常量声明">23 常量声明</a><br><br>                        <em>   <a href="#const声明和let声明">const声明和let声明</a>
+            </em>   <a href="#使用const声明对象">使用const声明对象</a><br><br>                <em>   <a href="#124-暂时性死区">24 暂时性死区</a>
+
+        </em>   <a href="#13-循环中的块绑定">3 循环中的块绑定</a><br><br>                <em>   <a href="#131-循环中的函数">31 循环中的函数</a>
+        </em>   <a href="#132-循环中的let声明">32 循环中的let声明</a><br>        <em>   <a href="#133-循环中的const声明">33 循环中的const声明</a>
+
+        </em>   <a href="#14-全局块绑定">4 全局块绑定</a><br>    <em>   <a href="#15-块绑定的最佳实践">5 块绑定的最佳实践</a>
+    </em>   <a href="#16-小结">6 小结</a><br></div>
+
+<hr>
+<p>以前，变量声明方式是JavaScript编程中一个令人困惑的部分。在大部分类C语言里，变量（或者说作用域）在声明的地方生成。但是在JavaScript中，情况就不是这样了。变量实际上创建的地方取决于你声明它的方式，而ECMAScript 6提供了一些可选的方式来让你更容易地控制作用域。本章将会告诉你为什么经典的<code>var</code>声明会令人感到困惑，并且会介绍ECMAScript 6中的块级作用域，然后会给出如何使用它们的最佳实践。</p>
+<h2 id="1-1-变量声明和提升"><a href="#1-1-变量声明和提升" class="headerlink" title="1.1 变量声明和提升"></a>1.1 变量声明和提升</h2><p>使用<code>var</code>的变量声明，会被当做处于当前所在函数的顶部（如果在函数外声明的话则是全局作用域）中的声明那样处理———无论它实际的声明位置在哪，这被称作<em>提升</em>。为了展示提升做了什么，看看下面的函数定义：</p>
+<pre><code>&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(condition)&lt;/span&gt; {&lt;/span&gt;
+
+    &lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; (condition) {
+        &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; value = &lt;span class=&quot;hljs-string&quot;&gt;&quot;blue&quot;&lt;/span&gt;;
+
+        &lt;span class=&quot;hljs-comment&quot;&gt;// 其他代码&lt;/span&gt;
+
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; value;
+    } &lt;span class=&quot;hljs-keyword&quot;&gt;else&lt;/span&gt; {
+
+        &lt;span class=&quot;hljs-comment&quot;&gt;// 这里value的值是undefined&lt;/span&gt;
+
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-literal&quot;&gt;null&lt;/span&gt;;
+    }
+
+    &lt;span class=&quot;hljs-comment&quot;&gt;// 这里value的值是undefined&lt;/span&gt;
+}`&lt;/pre&gt;
+
+如果你对JavaScript不熟悉，你可能会觉得变量`value`只有当`condition`的值为真的时候才会被创建。实际上，变量`value`无论如何都会被创建。在背地里，JavaScript引擎会将`getValue`函数变换成类似这种形式：
+
+&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(condition)&lt;/span&gt; {&lt;/span&gt;
+
+    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; value;
+
+    &lt;span class=&quot;hljs-keyword&quot;&gt;if&lt;/span&gt; (condition) {
+        value = &lt;span class=&quot;hljs-string&quot;&gt;&quot;blue&quot;&lt;/span&gt;;
+
+        &lt;span class=&quot;hljs-comment&quot;&gt;// 其他代码&lt;/span&gt;
+
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; value;
+    } &lt;span class=&quot;hljs-keyword&quot;&gt;else&lt;/span&gt; {
+
+        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-literal&quot;&gt;null&lt;/span&gt;;
+    }
+}`&lt;/pre&gt;
+
+`value`的声明被提升到了顶部，而值的初始化依然留在了原来的地方。这意味着变量`value`实际上在`else`语句中依然可以被访问到，而如果在那里被访问，变量只会拥有一个`undefined`的值，因为它没有被初始化。
+
+通常需要一些时间来让新的JavaScript开发者习惯于声明提升。误解了JavaScript中这个独特的行为常常会造成一些bug，因此，ECMAScript 6提供了一个块级作用域的可选方式来更好地控制一个变量的生命周期。
+
+## 1.2 块级声明
+
+块级声明是那些变量在给定块作用域外不能访问的声明方式。块级作用域，也叫词法作用域，被创建于：
+</code></pre><ol>
+<li>一个函数内部</li>
+<li><p>一个块内部 (通过 <code>{</code> 和 <code>}</code> 字符来标识)</p>
+<p>块级作用域是大量类C语言的工作方式，ECMAScript 6块级声明的引入是为了把同样的灵活性（和一致性）带入到JavaScript中。</p>
+<h3 id="1-2-1-let声明"><a href="#1-2-1-let声明" class="headerlink" title="1.2.1 let声明"></a>1.2.1 let声明</h3><p><code>let</code>声明语法和<code>var</code>的语法相同。你可以简单地把<code>var</code>替换成<code>let</code>来声明一个变量，这样做的话就会把这个变量的作用域限定在当前代码块里（这里有一些其他的细微差别，之后将会讨论）。 </p>
+<p>因为<code>let</code>声明不会被提升到当前块的顶部，你可能总是想要把<code>let</code>声明放在块最开始的地方，这样的话她们就可以在整个块中能够访问了。这里有个例子：</p>
+<pre class="prettyprint">`<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getValue</span><span class="hljs-params">(condition)</span> {</span>
+
+    <span class="hljs-keyword">if</span> (condition) {
+        <span class="hljs-keyword">let</span> value = <span class="hljs-string">"blue"</span>;
+
+        <span class="hljs-comment">// 其他代码</span>
+
+        <span class="hljs-keyword">return</span> value;
+    } <span class="hljs-keyword">else</span> {
+
+        <span class="hljs-comment">// 这里不存在变量value</span>
+
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
+    }
+
+    <span class="hljs-comment">// 这里不存在变量value</span>
+}`</pre>
+
+<p>这个版本的<code>getValue</code>函数的行为更接近于你在其他类C语言中所期望的样子。由于变量<code>value</code>用<code>let</code>来替代<code>var</code>进行声明，声明并没有被提升到函数定义的头部，并且一旦执行流到了<code>if</code>块的外面，变量<code>value</code>便无法访问到。如果<code>condition</code>的值为<code>false</code>的话，变量<code>value</code>就永远不会被声明或者初始化。</p>
+<h3 id="1-2-2-没有重复声明"><a href="#1-2-2-没有重复声明" class="headerlink" title="1.2.2 没有重复声明"></a>1.2.2 没有重复声明</h3><p>如果一个标识符已经在一个作用域中定义，再在那个作用域中使用<code>let</code>声明同一个标识符就会导致抛出错误。比如说：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> count = <span class="hljs-number">30</span>;
+
+<span class="hljs-comment">// 错误的语法</span>
+<span class="hljs-keyword">let</span> count = <span class="hljs-number">40</span>;`</pre>
+
+<p>在这个例子中，<code>count</code>被声明了两次：一次使用<code>var</code>，一次使用<code>let</code>。因为<code>let</code>永远不会重复定义一个已经存在在相同作用域的标识符，所以<code>let</code>声明会抛出一个错误。</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> count = <span class="hljs-number">30</span>;
+
+<span class="hljs-comment">// 没有抛出错误</span>
+<span class="hljs-keyword">if</span> (condition) {
+
+    <span class="hljs-keyword">let</span> count = <span class="hljs-number">40</span>;
+
+    <span class="hljs-comment">// 更多的代码</span>
+}`</pre>
+
+<p>这里<code>let</code>声明不会抛出错误，因为它在<code>if</code>语句里创建了一个叫做<code>count</code>的新变量，而不是在被包含块中创建的。在<code>if</code>块里面，这个新的变量隐藏了全局的<code>count</code>变量，阻止了在块内对它（全局变量）的访问。</p>
+<h3 id="1-2-3-常量声明"><a href="#1-2-3-常量声明" class="headerlink" title="1.2.3 常量声明"></a>1.2.3 常量声明</h3><p>在ECMAScript 6里你也可以使用<code>const</code>声明语法来定义变量。使用<code>const</code>来声明的变量会被认为是一个<em>常量</em>，意味着一旦被设置了，他们的值无法再改变。因此，每一个<code>const</code>变量必须要在声明 的时候初始化，正如下面例子那样：</p>
+<pre class="prettyprint">`<span class="hljs-comment">// 合法的常量</span>
+<span class="hljs-keyword">const</span> maxItems = <span class="hljs-number">30</span>;
+
+<span class="hljs-comment">// 语法错误：未初始化</span>
+<span class="hljs-keyword">const</span> name;`</pre>
+
+<p>变量<code>maxItems</code>被初始化了，因此它的<code>const</code>声明能够正常运行。不过变量<code>name</code>则会在运行中抛出语法错误，因为<code>name</code>未被初始化。</p>
+<h4 id="const声明和let声明"><a href="#const声明和let声明" class="headerlink" title="const声明和let声明"></a>const声明和let声明</h4><p>常数声明（即用<code>const</code>声明的变量）就像<code>let</code>声明一样，是一种块级的声明。这意味着一旦执行流到了块的外面，这些常数便无法再被访问，并且声明也不会被提升，就像下面这个例子中所展现的一样：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">if</span> (condition) {
+    <span class="hljs-keyword">const</span> maxItems = <span class="hljs-number">5</span>;
+
+    <span class="hljs-comment">// 更多的代码</span>
+}
+
+<span class="hljs-comment">// maxItems 无法在这里被访问到</span>`</pre>
+
+<p>在这段代码里，常量<code>maxItems</code>在<code>if</code>语句中声明，一旦语句执行完毕，<code>maxItems</code>在块外便无法访问。</p>
+<p>另外一个和<code>let</code>类似的点是，如果使用<code>const</code>定义一个已经在当前作用域定义的变量就会致使系统抛出错误——无论那个变量是使用<code>var</code>（在全局或者函数作用域中）定义还是使用<code>let</code>（在块作用域中）定义。比如说，考虑下面的代码：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> message = <span class="hljs-string">"Hello!"</span>;
+<span class="hljs-keyword">let</span> age = <span class="hljs-number">25</span>;
+
+<span class="hljs-comment">// 下面的两条语句都会抛出错误</span>
+<span class="hljs-keyword">const</span> message = <span class="hljs-string">"Goodbye!"</span>;
+<span class="hljs-keyword">const</span> age = <span class="hljs-number">30</span>;`</pre>
+
+<p>这两条<code>const</code>声明单独存在的话都是合法的，不过在前面已经使用<code>var</code>和<code>let</code>声明的情况下，它们都不会如你所期望那样执行。</p>
+<p>尽管在<code>let</code>和<code>const</code>之间有这么多的相似点，他们之间还是有一个很大的不同。无论在严格模式下还是非严格模式下，尝试去分配<code>const</code>到一个已定义的常量会抛出错误：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">const</span> maxItems = <span class="hljs-number">5</span>;
+
+maxItems = <span class="hljs-number">6</span>;      <span class="hljs-comment">// 抛出错误</span>`</pre>
+
+<p>类似其他语言中的常数，变量<code>maxItems</code>不能再被分配一个新的值。不过，有一点不像其他语言中的常量，如果这个常量是一个对象的话，它是可以被改变的。</p>
+<h4 id="使用const声明对象"><a href="#使用const声明对象" class="headerlink" title="使用const声明对象"></a>使用const声明对象</h4><p><code>const</code>声明阻止了绑定的改变，而不是值本身的改变。这意味着使用<code>const</code>声明的对象不会阻止这些对象的改变。</p>
+<pre class="prettyprint">`<span class="hljs-keyword">const</span> person = {
+    name: <span class="hljs-string">"Nicholas"</span>
+};
+
+<span class="hljs-comment">// 正常运行</span>
+person.name = <span class="hljs-string">"Greg"</span>;
+
+<span class="hljs-comment">// 抛出错误</span>
+person = {
+    name: <span class="hljs-string">"Greg"</span>
+};`</pre>
+
+<p>这里，<code>person</code>由一个带有一个属性的对象初始值所创建。改变<code>person.name</code>的值并不会导致错误，因为这只改变了<code>person</code>包含的东西，而没有改变<code>person</code>本身的绑定。当代码尝试去给<code>person</code>分配一个新值的时候（因此也就尝试去改变绑定本身），系统就会抛出一个错误。<code>const</code>配合对象的工作方式中这个细微的点很容易遭到误解。只需记住，<code>const</code>只阻止了绑定本身的改变，而没有阻止已绑定的值的改变。</p>
+<h3 id="1-2-4-暂时性死区"><a href="#1-2-4-暂时性死区" class="headerlink" title="1.2.4 暂时性死区"></a>1.2.4 暂时性死区</h3><p>一个使用<code>let</code>或<code>const</code>声明的变量只有在声明之后才能被访问到。如果尝试在声明之前访问的话就会导致一个引用错误（reference error）——即使使用一般来说较为安全的操作符如下面例子中的<code>typeof</code>操作符：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">if</span> (condition) {
+    console.log(<span class="hljs-keyword">typeof</span> value);  <span class="hljs-comment">// ReferenceError!</span>
+    <span class="hljs-keyword">let</span> value = <span class="hljs-string">"blue"</span>;
+}`</pre>
+
+<p>这个例子中，变量<code>value</code>使用<code>let</code>来定义和初始化，但是这条语句永远不会被执行，因为前一行抛出了一个错误。它的问题就是<code>value</code>存在于这个被JavaScript社区称作<em>暂时性死区</em>（temporal dead zone, TDZ）的地方。TDZ从未在ECMAScript标准中明确命名，不过它常常用来解释用<code>let</code>和<code>const</code>声明的变量在它们的声明之前无法被访问的现象。这块内容包含了由于TDZ的存在而造成的关于声明位置的一些细节，这里的例子中都是以<code>let</code>作为示范，不过这些也同样适用于<code>const</code>。</p>
+<p>当JavaScript引擎执行到一个块中，检测到一个变量声明时，它可能把这个声明提升到函数的顶部，或者全局作用域中（对<code>var</code>）,也可能把声明放到TDZ中（对<code>let</code>和<code>const</code>）。任何想要尝试访问一个处于TDZ中的变量的行为都会导致运行错误。只有当执行流到了变量声明的地方的时候，这个变量才会从TDZ中移除，这样才能安全地使用。</p>
+<p>当你尝试去使用一个用<code>let</code>或者<code>const</code>声明的变量的时候，在声明前是不能够访问的。正如前一个例子中所展示的那样，这条规则甚至对与通常上来说安全的<code>typeof</code>操作符也是适用的。不过，你可以在变量声明的块的外面使用<code>typeof</code>——虽然这么做不会得到你想要的结果。看看下面的代码：</p>
+<pre class="prettyprint">`console.log(<span class="hljs-keyword">typeof</span> value);     <span class="hljs-comment">// "undefined"</span>
+
+<span class="hljs-keyword">if</span> (condition) {
+    <span class="hljs-keyword">let</span> value = <span class="hljs-string">"blue"</span>;
+}`</pre>
+
+<p>当<code>typeof</code>操作符执行的时候变量<code>value</code>不在TDZ中，因为它存在于<code>value</code>声明的块的外面。这意味着这里没有<code>value</code>的任何绑定，<code>typeof</code>也就简单地返回<code>&quot;undefined&quot;</code></p>
+<p>TDZ只是块绑定中一个特殊的方面。另外一个特殊的方面就是它们在循环中的使用方式。</p>
+<h2 id="1-3-循环中的块绑定"><a href="#1-3-循环中的块绑定" class="headerlink" title="1.3 循环中的块绑定"></a>1.3 循环中的块绑定</h2><p>或许开发者们最想要变量块级作用域的地方就是在<code>for</code>循环中了，这意味着一次性使用的计数变量只能在循环中使用。举个例子，在JavaScript中这样的代码十分常见：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) {
+    process(items[i]);
+}
+
+<span class="hljs-comment">// i在这里依然可以被访问到</span>
+console.log(i);                     <span class="hljs-comment">// 10</span>`</pre>
+
+<p>在其他语言中，块级作用域默认存在，这个例子会如所期望那样执行，即变量i只有在循环中才能被访问到。然而在JavaScript中，变量i在循环结束后依然可以被访问到，因为<code>var</code>声明被提升了。如果使用<code>let</code>来替代它，如下面代码中那样，就能得到预想那样的行为。</p>
+<pre class="prettyprint">`<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) {
+    process(items[i]);
+}
+
+<span class="hljs-comment">// i在这里不能被访问 - 抛出了一个错误</span>
+console.log(i);`</pre>
+
+<p>在这个例子中，变量i只是存在于<code>for</code>循环内部。一旦循环结束，这个变量再也不能在其他位置访问到了。</p>
+<h3 id="1-3-1-循环中的函数"><a href="#1-3-1-循环中的函数" class="headerlink" title="1.3.1 循环中的函数"></a>1.3.1 循环中的函数</h3><p><code>var</code>的特性使得在循环中创建函数变得十分困难，因为循环中的变量在循环的范围的外面依然可以被访问到。看看下面的代码：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> funcs = [];
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) {
+    funcs.push(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span> console.log(i); });
+}
+
+funcs.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(func)</span> {</span>
+    func();     <span class="hljs-comment">// 输出了数字“10”十次</span>
+});`</pre>
+
+<p>你或许会认为这段代码会打印出数字0到9，但是实际上它在一行中输出了数字10十次。这是因为<code>i</code>在循环的每次迭代中被共用，这意味着在循环中创建的所有函数都拥有对同一个变量的引用。变量<code>i</code>在循环结束的时候的值为<code>10</code>，因此当<code>console.log(i)</code>被调用的时候，每次都会打印同一个值。</p>
+<p>为了解决这个问题，开发者们在循环中使用了立即处理函数表达式（IIFEs）来在每次迭代的时候强制创建变量的一个新的副本，正如下面例子那样：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> funcs = [];
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) {
+    funcs.push((<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(value)</span> {</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+            console.log(value);
+        }
+    }(i)));
+}
+
+funcs.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(func)</span> {</span>
+    func();     <span class="hljs-comment">// 输出 0, 然后 1, 然后 2, 直到 9</span>
+});`</pre>
+
+<p>这个版本在循环中使用了IIFE。变量<code>i</code>传到IIFE里，在IIFE中创建了它值的副本并且作为<code>value</code>保存下来。这是在当次迭代中的函数所使用的值，因此在循环从0增加到9的时候，调用每个函数都会返回所期望的值。幸运的是，ECMAScript 6中使用<code>let</code>和<code>const</code>的块级绑定可以为你简化这种循环。</p>
+<h3 id="1-3-2-循环中的let声明"><a href="#1-3-2-循环中的let声明" class="headerlink" title="1.3.2 循环中的let声明"></a>1.3.2 循环中的let声明</h3><p><code>let</code>声明通过有效地模仿前面例子中IIFE的行为来简化了循环。在每次的迭代中，循环会创建一个新的变量并且用和上一个迭代中同样的变量值和变量名来初始化它。这意味着你可以抛弃IIFE并得到你所期望的结果，就像这样：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> funcs = [];
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) {
+    funcs.push(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        console.log(i);
+    });
+}
+
+funcs.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(func)</span> {</span>
+    func();     <span class="hljs-comment">// 输出 0, 然后 1, 然后 2, 直到 9</span>
+})`</pre>
+
+<p>这个循环工作起来像极了使用了<code>var</code>和IIFE的循环，不过，看得出来，这更加简洁。在每次循环中<code>let</code>声明创建了一个新的<code>i</code>变量，这使得在循环中创建的每一个函数都获得了它自己对于<code>i</code>的副本。每一个<code>i</code>的副本都拥有在每个循环迭代的开始它被创建的地方所分配的值。这在<code>for-in</code>和<code>for-of</code>循环中都是适用的，就像这里所展示的那样：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> funcs = [],
+    object = {
+        a: <span class="hljs-literal">true</span>,
+        b: <span class="hljs-literal">true</span>,
+        c: <span class="hljs-literal">true</span>
+    };
+
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> object) {
+    funcs.push(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        console.log(key);
+    });
+}
+
+funcs.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(func)</span> {</span>
+    func();     <span class="hljs-comment">// 输出了 "a", 接着 "b", 接着 "c"</span>
+});`</pre>
+
+<p>在这个例子中，<code>for-in</code>循环表现出了和<code>for</code>循环中相同的行为。每次循环的时候，会创建一个新的<code>key</code>绑定，并且每个函数都拥有它自己的<code>key</code>变量的副本。如果使用<code>var</code>来声明<code>key</code>，所有的函数都会输出<code>&quot;c&quot;</code>。</p>
+<p><code>let</code>声明在循环中的行为是规定中一个特殊的行为而不是和<code>let</code>不被提升的特性有关，理解这点很重要。实际上，早期对<code>let</code>的实现并没有包含这个行为，直到后来才被添加。</p>
+<h3 id="1-3-3-循环中的const声明"><a href="#1-3-3-循环中的const声明" class="headerlink" title="1.3.3 循环中的const声明"></a>1.3.3 循环中的const声明</h3><p>ECMAScript 6 的说明中并没有明确不允许在循环中使用<code>const</code>声明。不过，基于这个类型的行为将会和你在循环中使用的有所不同。对于一个普通的<code>for</code>循环，你可以使用<code>const</code>来初始化，不过如果你尝试去改变它的值的话，循环会抛出一个警告。比如说：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> funcs = [];
+
+<span class="hljs-comment">// 在一次迭代后抛出错误</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">10</span>; i++) {
+    funcs.push(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        console.log(i);
+    });
+}`</pre>
+
+<p>在这段代码中，变量<code>i</code>作为一个常量被声明。循环的第一次迭代中，<code>i</code>的值为0，执行成功。当<code>i++</code>执行的时候，就抛出了一个错误，因为尝试去修改一个常量的值。因此，你只能在循环的初始化中使用<code>const</code>声明一个不会修改的变量。</p>
+<p>另一方面，当在<code>for-in</code>和<code>for-of</code>循环中使用的时候，一个<code>const</code>变量的表现和<code>let</code>变量一致。因此下面的例子不会造成错误：</p>
+<pre class="prettyprint">`<span class="hljs-keyword">var</span> funcs = [],
+    object = {
+        a: <span class="hljs-literal">true</span>,
+        b: <span class="hljs-literal">true</span>,
+        c: <span class="hljs-literal">true</span>
+    };
+
+<span class="hljs-comment">// 不会造成错误！</span>
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> key <span class="hljs-keyword">in</span> object) {
+    funcs.push(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+        console.log(key);
+    });
+}
+
+funcs.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(func)</span> {</span>
+    func();     <span class="hljs-comment">// 输出 "a", 接着 "b", 接着 "c"</span>
+});`</pre>
+
+<p>这段代码几乎和“循环中的let声明”节中第二个例子的表现一致。唯一的不同就是<code>key</code>的值在循环中不能改变。<code>for-in</code>与<code>for-of</code>和<code>const</code>之所以能够良好地工作是因为循环初始化器在每次迭代的时候创建一个新的变量，而不是尝试修改已存在变量的值（和前面例子中使用<code>for</code>而不是<code>for-in</code>的情况一样）。</p>
+<h2 id="1-4-全局块绑定"><a href="#1-4-全局块绑定" class="headerlink" title="1.4 全局块绑定"></a>1.4 全局块绑定</h2><p><code>let</code>和<code>const</code>另外一个不同于<code>var</code>的地方是他们在全局作用域的表现。当<code>var</code>在全局作用域中使用时，它会创建一个全局变量，也是全局对象上的属性（浏览器中为<code>window</code>对象）。这意味着你使用<code>var</code>可能偶然地覆写一个已经存在的全局变量，比如：</p>
+<pre class="prettyprint">`<span class="hljs-comment">// 在浏览器中</span>
+<span class="hljs-keyword">var</span> <span class="hljs-built_in">RegExp</span> = <span class="hljs-string">"Hello!"</span>;
+console.log(window.RegExp);     <span class="hljs-comment">// "Hello!"</span>
+
+<span class="hljs-keyword">var</span> ncz = <span class="hljs-string">"Hi!"</span>;
+console.log(window.ncz);        <span class="hljs-comment">// "Hi!"</span>`</pre>
+
+<p>即使全局对象<code>RegExp</code>在<code>window</code>中已经定义，它由于会被<code>var</code>声明给覆写而不安全。这个例子声明了一个新的全局变量<code>RegExp</code>，它覆写了初始的全局变量。类似的，<code>ncz</code>也被定义为一个全局变量，并且立即定义了一个<code>window</code>上的属性。这是JavaScript一贯工作的方式。</p>
+<p>如果你替代性地在全局作用域中使用<code>let</code>或者<code>const</code>，在全局作用域中会创建一个新的变量绑定，但是不会给全局对象上添加属性。这也意味着你不能通过<code>let</code>或者<code>const</code>来覆写一个全局变量——你只能隐藏它。这里有个例子：</p>
+<p><pre class="prettyprint">`<span class="hljs-comment">// 在浏览器中</span><br><span class="hljs-keyword">let</span> <span class="hljs-built_in">RegExp</span> = <span class="hljs-string">“Hello!”</span>;<br>console.log(<span class="hljs-built_in">RegExp</span>);                    <span class="hljs-comment">// “Hello!”</span><br>console.log(window.RegExp === <span class="hljs-built_in">RegExp</span>);  <span class="hljs-comment">// false</span></p>
+<p><span class="hljs-keyword">const</span> ncz = <span class="hljs-string">“Hi!”</span>;<br>console.log(ncz);                       <span class="hljs-comment">// “Hi!”</span><br>console.log(<span class="hljs-string">“ncz”</span> <span class="hljs-keyword">in</span> window);           <span class="hljs-comment">// false</span></p>
+</li>
+</ol>
+<p>这里，对<code>RegExp</code>的<code>let</code>声明创建了一个变量绑定，它隐藏了全局的<code>RegExp</code>。这意味着<code>window.RegExp</code>和<code>RegExp</code>不相等，并且这对全局作用域不会造成任何问题。同样的，对<code>ncz</code>的<code>const</code>声明创建了一个变量绑定，也同样不会创建一个全局对象上的属性。这个特性使得在全局作用域中使用<code>let</code>和<code>const</code>更加安全——如果你不想给全局对象添加属性的话。</p>
+<p>如果你想要一段代码在全局对象上可访问，你可能依然想要在全局作用域中使用<code>var</code>。如果你想要跨框架或窗口访问代码的话，这种情况就挺常见了。</p>
+<h2 id="1-5-块绑定的最佳实践"><a href="#1-5-块绑定的最佳实践" class="headerlink" title="1.5 块绑定的最佳实践"></a>1.5 块绑定的最佳实践</h2><p>在ECMAScript发展的过程中，有一个广为传播的思想，就是你应该用<code>let</code>来取代<code>var</code>作为默认的变量声明方式。对很多JavaScript开发者来说，<code>let</code>的表现正如他们期望<code>var</code>所应该的那样，因此这种直接的替换符合逻辑上的感觉。这时，你需要对那些对修改保护有需求的变量使用<code>const</code>。</p>
+<p>不过，随着更多的开发者转向ECMAScript 6，一个可选的方式受到了欢迎：默认使用<code>const</code>，只有当你知道一个变量的值会被改变的时候使用<code>let</code>。根本原因是大部分变量在初始化后不会被改变，而出乎意料的值的改变是bug之源。这个观点有大量的支持者，如果你采用ECMAScript 6的话，这个观点值得你在代码中践行。</p>
+<h2 id="1-6-小结"><a href="#1-6-小结" class="headerlink" title="1.6 小结"></a>1.6 小结</h2><p><code>let</code>和<code>const</code>的块变量绑定把块级词法作用域引入到了JavaScript。这些变量不会被提升并且只存在于它们声明处所在的块中。它提供了更加类似其他语言的表现，因为变量现在可以在它们需要的地方声明，造成出乎意料的错误的可能性也小了。不过有一个副作用，就是你不能再在变量声明之前访问到这个变量了，使用类似<code>typeof</code>这样安全的操作符也不行。尝试去在块绑定变量声明前访问它会导致错误，因为绑定变量存在于暂时性死区（TDZ）中。</p>
+<p>在很多情况下，<code>let</code>和<code>const</code>和<code>var</code>的表现很近似，不过，在循环上有所不同。无论是对<code>let</code>还是<code>const</code>，<code>for-in</code>和<code>for-of</code>循环会在每次循环迭代的时候创建一个新的绑定变量。这意味着在循环体中创建的函数可以访问到当前迭代中循环绑定变量的值，而不是访问到在循环结束后的值（<code>var</code>的行为）。同样，对在<code>for</code>循环中的<code>let</code>声明也是如此。如果尝试在<code>for</code>循环中使用<code>const</code>声明，可能会致使错误。</p>
+<p>现阶段对块变量绑定的最佳实践是默认使用<code>const</code>，只有当你知道一个变量的值需要改变的时候才去使用<code>let</code>。这保证了代码最低限度的改变，而这对阻止特定类型错误有所帮助。</p>
+<hr>
+<p>原文地址：<a href="https://github.com/nzakas/understandinges6/blob/master/manuscript/01-Block-Bindings.md">Understanding ECMAScript 6: Block Bindings</a></p>
+<pre><code>&lt;div&gt;
+    作者：ontides 发表于2016/11/17 12:32:43 [原文链接](http://blog.csdn.net/ontides/article/details/53198516)
+&lt;/div&gt;
+&lt;div&gt;
+阅读：70 评论：0 [查看评论](http://blog.csdn.net/ontides/article/details/53198516#comments)
+&lt;/div&gt;
+</code></pre>
+      
+    </div>
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
+        <p><span>发布时间:</span>2016-11-17, 12:32:43</p>
+        <p><span>最后更新:</span>2017-02-16, 13:24:45</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/" title="[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings">https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2016/11/08/原-JavaScript中的this/">
+                    [原]JavaScript中的this
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#《理解-ECMAScript-6》第一章：块绑定"><span class="toc-number">1.</span> <span class="toc-text">《理解 ECMAScript 6》第一章：块绑定</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-1-变量声明和提升"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 变量声明和提升</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-1-let声明"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.2.1 let声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-2-没有重复声明"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2.2 没有重复声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-3-常量声明"><span class="toc-number">1.1.3.</span> <span class="toc-text">1.2.3 常量声明</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#const声明和let声明"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">const声明和let声明</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#使用const声明对象"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">使用const声明对象</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-4-暂时性死区"><span class="toc-number">1.1.4.</span> <span class="toc-text">1.2.4 暂时性死区</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-3-循环中的块绑定"><span class="toc-number">1.2.</span> <span class="toc-text">1.3 循环中的块绑定</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-1-循环中的函数"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.3.1 循环中的函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-2-循环中的let声明"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.3.2 循环中的let声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-3-循环中的const声明"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.3.3 循环中的const声明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-4-全局块绑定"><span class="toc-number">1.3.</span> <span class="toc-text">1.4 全局块绑定</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-5-块绑定的最佳实践"><span class="toc-number">1.4.</span> <span class="toc-text">1.5 块绑定的最佳实践</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-6-小结"><span class="toc-number">1.5.</span> <span class="toc-text">1.6 小结</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    
+<div class="share">
+    
+        <div class="bdsharebuttonbox">
+            <a href="#" class="fa fa-twitter bds_twi" data-cmd="twi" title="分享到推特"></a>
+            <a href="#" class="fa fa-weibo bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+            <a href="#" class="fa fa-qq bds_sqq" data-cmd="sqq" title="分享给 QQ 好友"></a>
+            <a href="#" class="fa fa-files-o bds_copy" data-cmd="copy" title="复制网址"></a>
+            <a href="#" class="fa fa fa-envelope-o bds_mail" data-cmd="mail" title="通过邮件分享"></a>
+            <a href="#" class="fa fa-weixin bds_weixin" data-cmd="weixin" title="生成文章二维码"></a>
+            <a href="#" class="fa fa-share-alt bds_more" data-cmd="more"></i></a>
+        </div>
+        <script>
+            window._bd_share_config={
+                "common":{"bdSnsKey":{},"bdText":"[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings　| Ontides's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+        </script>
+    
+
+    
+</div>
+
+
+
+
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/';
+            this.page.identifier = '2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//ontides.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2016/11/08/原-JavaScript中的this/" title="下一篇: [原]JavaScript中的this">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/原-JavaScript中的this/">[原]JavaScript中的this</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/原-细说JavaScript作用域和闭包/">[原]细说JavaScript作用域和闭包</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/03/原-JavaScript中的LHS查询和RHS查询/">[原]JavaScript中的LHS查询和RHS查询</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i> 
+                2016-2017 Ontides
+            </div>
+            <div class="footer-right">
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
