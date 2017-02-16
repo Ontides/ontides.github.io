@@ -17,13 +17,13 @@
 
 <meta name="description" content="学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[原]JavaScript中的this">
-<meta property="og:url" content="https://ontides.github.io/2016/11/08/原-JavaScript中的this/index.html">
+<meta property="og:title" content="JavaScript中的this">
+<meta property="og:url" content="https://ontides.github.io/2016/11/08/JavaScript中的this/index.html">
 <meta property="og:site_name" content="Ontides's Blog">
 <meta property="og:description" content="学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。">
-<meta property="og:updated_time" content="2017-02-16T05:30:30.000Z">
+<meta property="og:updated_time" content="2017-02-16T05:39:25.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="[原]JavaScript中的this">
+<meta name="twitter:title" content="JavaScript中的this">
 <meta name="twitter:description" content="学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
@@ -56,7 +56,7 @@
 <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
 
 
-<title>[原]JavaScript中的this | Ontides&#39;s Blog</title>
+<title>JavaScript中的this | Ontides&#39;s Blog</title>
 
 <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
@@ -267,10 +267,10 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-原-JavaScript中的this" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-JavaScript中的this" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/11/08/原-JavaScript中的this/" class="article-date">
+      <a href="/2016/11/08/JavaScript中的this/" class="article-date">
       <time datetime="2016-11-07T16:20:31.000Z" itemprop="datePublished">2016-11-08</time>
 </a>
 
@@ -286,7 +286,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      [原]JavaScript中的this
+      JavaScript中的this
     </h1>
   
 
@@ -458,13 +458,13 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/11/08/原-JavaScript中的this/">[原]JavaScript中的this</a></p>
+        <p><span>本文标题:</span><a href="/2016/11/08/JavaScript中的this/">JavaScript中的this</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
         <p><span>发布时间:</span>2016-11-08, 00:20:31</p>
-        <p><span>最后更新:</span>2017-02-16, 13:30:30</p>
+        <p><span>最后更新:</span>2017-02-16, 13:39:25</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/11/08/原-JavaScript中的this/" title="[原]JavaScript中的this">https://ontides.github.io/2016/11/08/原-JavaScript中的this/</a>
-            <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/11/08/原-JavaScript中的this/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/11/08/JavaScript中的this/" title="JavaScript中的this">https://ontides.github.io/2016/11/08/JavaScript中的this/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/11/08/JavaScript中的this/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -533,7 +533,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"[原]JavaScript中的this　| Ontides's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"JavaScript中的this　| Ontides's Blog　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -552,8 +552,8 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     <div id="disqus_thread"></div>
     <script>
         var disqus_config = function(){
-            this.page.url = 'https://ontides.github.io/2016/11/08/原-JavaScript中的this/';
-            this.page.identifier = '2016/11/08/原-JavaScript中的this/';
+            this.page.url = 'https://ontides.github.io/2016/11/08/JavaScript中的this/';
+            this.page.identifier = '2016/11/08/JavaScript中的this/';
         };
         var loadComment = function(){
             var d = document, s = d.createElement('script');
@@ -589,7 +589,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
         
     </div>
 
-    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/原-JavaScript中的this/">[原]JavaScript中的this</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/原-细说JavaScript作用域和闭包/">[原]细说JavaScript作用域和闭包</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/03/原-JavaScript中的LHS查询和RHS查询/">[原]JavaScript中的LHS查询和RHS查询</a></li></ul>
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/08/JavaScript中的this/">JavaScript中的this</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/">[译]《Understanding ECMAScript 6》——Introduction</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/05/细说JavaScript作用域和闭包/">细说JavaScript作用域和闭包</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/03/JavaScript中的LHS查询和RHS查询/">JavaScript中的LHS查询和RHS查询</a></li></ul>
 
 
 
