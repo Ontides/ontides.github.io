@@ -997,7 +997,7 @@ foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span
     <link href="https://ontides.github.io/2016/10/03/JavaScript%E4%B8%AD%E7%9A%84LHS%E6%9F%A5%E8%AF%A2%E5%92%8CRHS%E6%9F%A5%E8%AF%A2/"/>
     <id>https://ontides.github.io/2016/10/03/JavaScript中的LHS查询和RHS查询/</id>
     <published>2016-10-03T02:22:13.000Z</published>
-    <updated>2017-02-16T05:43:44.000Z</updated>
+    <updated>2017-02-16T07:08:25.000Z</updated>
     
     <content type="html"><![CDATA[<p>JavaScript中在预编译后执行代码时对变量的查询分为LHS（Left-Hand-Side）查询和RHS(Right-Hand-Side)查询。</p>
 <hr>
@@ -1030,7 +1030,7 @@ foo(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
     
     <summary type="html">
     
-      Welcome to Hexo! This is your very first post.
+      JavaScript中在预编译后执行代码时对变量的查询分为LHS（Left-Hand-Side）查询和RHS(Right-Hand-Side)查询。
     
     </summary>
     
