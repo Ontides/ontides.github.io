@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://ontides.github.io/"/>
-  <updated>2017-02-16T05:24:45.000Z</updated>
+  <updated>2017-02-16T05:30:26.000Z</updated>
   <id>https://ontides.github.io/</id>
   
   <author>
@@ -20,24 +20,9 @@
     <link href="https://ontides.github.io/2016/11/17/%E8%AF%91-%E3%80%8AUnderstanding-ECMAScript-6%E3%80%8BChapter-1%EF%BC%9ABlock-Bindings/"/>
     <id>https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/</id>
     <published>2016-11-17T04:32:43.000Z</published>
-    <updated>2017-02-16T05:24:45.000Z</updated>
+    <updated>2017-02-16T05:30:26.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="《理解-ECMAScript-6》第一章：块绑定"><a href="#《理解-ECMAScript-6》第一章：块绑定" class="headerlink" title="《理解 ECMAScript 6》第一章：块绑定"></a>《理解 ECMAScript 6》第一章：块绑定</h1><hr>
-<div class="toc"><br><br><em>   <a href="#理解-ecmascript-6第一章块绑定">理解 ECMAScript 6第一章块绑定</a>
-
-        </em>   <a href="#11-变量声明和提升">1 变量声明和提升</a><br>    <em>   <a href="#12-块级声明">2 块级声明</a>
-
-                </em>   <a href="#121-let声明">21 let声明</a><br>        <em>   <a href="#122-没有重复声明">22 没有重复声明</a>
-        </em>   <a href="#123-常量声明">23 常量声明</a><br><br>                        <em>   <a href="#const声明和let声明">const声明和let声明</a>
-            </em>   <a href="#使用const声明对象">使用const声明对象</a><br><br>                <em>   <a href="#124-暂时性死区">24 暂时性死区</a>
-
-        </em>   <a href="#13-循环中的块绑定">3 循环中的块绑定</a><br><br>                <em>   <a href="#131-循环中的函数">31 循环中的函数</a>
-        </em>   <a href="#132-循环中的let声明">32 循环中的let声明</a><br>        <em>   <a href="#133-循环中的const声明">33 循环中的const声明</a>
-
-        </em>   <a href="#14-全局块绑定">4 全局块绑定</a><br>    <em>   <a href="#15-块绑定的最佳实践">5 块绑定的最佳实践</a>
-    </em>   <a href="#16-小结">6 小结</a><br></div>
-
-<hr>
 <p>以前，变量声明方式是JavaScript编程中一个令人困惑的部分。在大部分类C语言里，变量（或者说作用域）在声明的地方生成。但是在JavaScript中，情况就不是这样了。变量实际上创建的地方取决于你声明它的方式，而ECMAScript 6提供了一些可选的方式来让你更容易地控制作用域。本章将会告诉你为什么经典的<code>var</code>声明会令人感到困惑，并且会介绍ECMAScript 6中的块级作用域，然后会给出如何使用它们的最佳实践。</p>
 <h2 id="1-1-变量声明和提升"><a href="#1-1-变量声明和提升" class="headerlink" title="1.1 变量声明和提升"></a>1.1 变量声明和提升</h2><p>使用<code>var</code>的变量声明，会被当做处于当前所在函数的顶部（如果在函数外声明的话则是全局作用域）中的声明那样处理———无论它实际的声明位置在哪，这被称作<em>提升</em>。为了展示提升做了什么，看看下面的函数定义：</p>
 <pre><code>&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(condition)&lt;/span&gt; {&lt;/span&gt;
@@ -332,7 +317,7 @@ console.log(window.ncz);        <span class="hljs-comment">// "Hi!"</span>`</pre
     
     <summary type="html">
     
-      &lt;h1 id=&quot;《理解-ECMAScript-6》第一章：块绑定&quot;&gt;&lt;a href=&quot;#《理解-ECMAScript-6》第一章：块绑定&quot; class=&quot;headerlink&quot; title=&quot;《理解 ECMAScript 6》第一章：块绑定&quot;&gt;&lt;/a&gt;《理解 ECMAScript
+      以前，变量声明方式是JavaScript编程中一个令人困惑的部分。在大部分类C语言里，变量（或者说作用域）在声明的地方生成。但是在JavaScript中，情况就不是这样了。变量实际上创建的地方取决于你声明它的方式，而ECMAScript 6提供了一些可选的方式来让你更容易地控制作用域。本章将会告诉你为什么经典的`var`声明会令人感到困惑，并且会介绍ECMAScript 6中的块级作用域，然后会给出如何使用它们的最佳实践。
     
     </summary>
     
@@ -344,17 +329,9 @@ console.log(window.ncz);        <span class="hljs-comment">// "Hi!"</span>`</pre
     <link href="https://ontides.github.io/2016/11/08/%E5%8E%9F-JavaScript%E4%B8%AD%E7%9A%84this/"/>
     <id>https://ontides.github.io/2016/11/08/原-JavaScript中的this/</id>
     <published>2016-11-07T16:20:31.000Z</published>
-    <updated>2017-02-16T05:24:45.000Z</updated>
+    <updated>2017-02-16T05:30:30.000Z</updated>
     
     <content type="html"><![CDATA[<p>学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。</p>
-<hr>
-<div class="toc"><br><br><em>   </em>   <a href="#一this的起源">一this的起源</a><br>    <em>   <a href="#二对this的误解">二对this的误解</a>
-    </em>   <a href="#三this真正的指向">三this真正的指向</a><br><br>                <em>   <a href="#1-隐式绑定">隐式绑定</a>
-        </em>   <a href="#2-显式绑定">显式绑定</a><br>        <em>   <a href="#3-new绑定">new绑定</a>
-        </em>   <a href="#4-默认绑定">默认绑定</a><br><br>        <em>   <a href="#四this绑定优先级">四this绑定优先级</a>
-    </em>   <a href="#五值得注意的几个点">五值得注意的几个点</a><br><br>                <em>   <a href="#1-小心隐性绑定">小心隐性绑定</a>
-        </em>   <a href="#2-箭头函数">箭头函数</a><br></div>
-
 <hr>
 <h2 id="一、this的起源"><a href="#一、this的起源" class="headerlink" title="一、this的起源"></a>一、this的起源</h2><p>了解<code>this</code>是怎么来的，对更好地理解<code>this</code>还是很重要的。</p>
 <p>当一个函数被调用的时候，也就是执行流进入一个函数的时候，会自动创建一个被称为执行上下文的记录（其实这个时候也就产生了作用域链），这个记录里包含了各种必要信息，比如函数的调用方式，函数的参数（也就是<code>arguments</code>）等，<code>this</code>就包含在这个信息里。</p>
@@ -505,7 +482,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     
     <summary type="html">
     
-      &lt;p&gt;学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别
+      学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。
     
     </summary>
     
@@ -517,7 +494,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     <link href="https://ontides.github.io/2016/10/17/%E8%AF%91-%E3%80%8AUnderstanding-ECMAScript-6%E3%80%8B%E2%80%94%E2%80%94Introduction/"/>
     <id>https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/</id>
     <published>2016-10-16T16:49:08.000Z</published>
-    <updated>2017-02-16T05:24:45.000Z</updated>
+    <updated>2017-02-16T05:27:26.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="《理解-ECMAScript-6》——简介"><a href="#《理解-ECMAScript-6》——简介" class="headerlink" title="《理解 ECMAScript 6》——简介"></a>《理解 ECMAScript 6》——简介</h1><p>JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展对作为整体的JavaScript的成功至关重要，而这本书包含了这个语言近来最重要的更新——ECMAScript6的诸多改变。</p>
 <h2 id="一、走向-ECMAScript-6"><a href="#一、走向-ECMAScript-6" class="headerlink" title="一、走向 ECMAScript 6"></a>一、走向 ECMAScript 6</h2><p>2007年，JavaScript处在一个发展的关键时刻。当饱受欢迎的Ajax引领着动态Web应用的新时代时，JavaScript自从1999年第三版的ECMA-262发布后一直没有变化。作为负责推动ECMAScript发展进程的委员会，TC-39为 ECMAScript 4 制定了大量的规范草案。新的特性包括新语法、模块、类、类的继承、对象私有变量，以及可选类型注释等等。</p>
@@ -581,7 +558,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     
     <summary type="html">
     
-      &lt;h1 id=&quot;《理解-ECMAScript-6》——简介&quot;&gt;&lt;a href=&quot;#《理解-ECMAScript-6》——简介&quot; class=&quot;headerlink&quot; title=&quot;《理解 ECMAScript 6》——简介&quot;&gt;&lt;/a&gt;《理解 ECMAScript 6》——简介&lt;/
+      JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展对作为整体的JavaScript的成功至关重要，而这本书包含了这个语言近来最重要的更新——ECMAScript6的诸多改变。
     
     </summary>
     
@@ -593,38 +570,11 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     <link href="https://ontides.github.io/2016/10/05/%E5%8E%9F-%E7%BB%86%E8%AF%B4JavaScript%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E9%97%AD%E5%8C%85/"/>
     <id>https://ontides.github.io/2016/10/05/原-细说JavaScript作用域和闭包/</id>
     <published>2016-10-05T02:36:19.000Z</published>
-    <updated>2017-02-16T05:24:45.000Z</updated>
+    <updated>2017-02-16T05:30:04.000Z</updated>
     
     <content type="html"><![CDATA[<p>还记得最开始接触JavaScript时，只是会用<code>document.getElementById(&quot;&quot;)</code>这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认识到在前后端分离的时候，前端原来可以做到这么多东西，诸如模块，路由，依赖注入，双向绑定这样的词汇让我感到陌生而不知所措。即便是我已经在那个项目中使用AngularJS中上面所说的那些特性，我对AngularJS还是充满了困惑——我不清楚AngularJS是如何实现的。</p>
 <p>审视自己对JavaScript浅薄认识，我意识到自己应该去先把js语言本身好好学习一下。确实，在较为仔细地学习了ECMAScript后，我发现，我开始理解模块的实现，对如<code>.apply()</code>，<code>.bind()</code>等用法的了解让我对如何写出更好的js代码有了更多的理解。当然，现在我也只是入门水平，还需要不断学习和提高。</p>
 <p>这篇文章包含着我对javascript作用域和闭包的理解，写的过程也是整理和归纳的过程，以后也会用这种方式来归纳总结自己所学所想，希望自己能不断进步吧。</p>
-<hr>
-<div class="toc"><br><br><em>   </em>   <a href="#一javascript有哪些作用域类型">一JavaScript有哪些作用域类型</a><br>    <em>   <a href="#二作用域与标识符查询">二作用域与标识符查询</a>
-
-                </em>   <a href="#执行环境与作用域链">执行环境与作用域链</a><br>        <em>   <a href="#标识符查询">标识符查询</a>
-
-        </em>   <a href="#三可以形成独立作用域的结构">三可以形成独立作用域的结构</a><br><br>                <em>   <a href="#函数作用域">函数作用域</a>
-
-                        </em>   <a href="#利用函数内部对外部的隐藏">利用函数内部对外部的隐藏</a><br>            <em>   <a href="#匿名函数">匿名函数</a>
-
-                </em>   <a href="#块作用域">块作用域</a><br><br>                        <em>   <a href="#no-block-level-scopes">No Block-Level Scopes</a>
-            </em>   <a href="#with">with</a><br>            <em>   <a href="#trycatch">trycatch</a>
-            </em>   <a href="#letconst">letconst</a><br><br>        <em>   <a href="#四提升">四提升</a>
-
-                </em>   <a href="#提升的表现">提升的表现</a><br>        <em>   <a href="#提升的优先级">提升的优先级</a>
-        </em>   <a href="#提升的深层原因">提升的深层原因</a><br><br>        <em>   <a href="#五跨越词法作用域的两种机制">五跨越词法作用域的两种机制</a>
-
-                </em>   <a href="#eval">eval</a><br>        <em>   <a href="#with-1">with</a>
-
-        </em>   <a href="#六闭包与模块机制">六闭包与模块机制</a><br><br>                <em>   <a href="#闭包">闭包</a>
-
-                        </em>   <a href="#什么是闭包">什么是闭包</a><br>            <em>   <a href="#闭包相关的问题">闭包相关的问题</a>
-
-                                </em>   <a href="#问题">问题</a><br>                <em>   <a href="#解决办法">解决办法</a>
-
-                </em>   <a href="#模块机制">模块机制</a><br><br>                        <em>   <a href="#简单的模块">简单的模块</a>
-            </em>   <a href="#单例模式">单例模式</a><br>            *   <a href="#现代模块">现代模块</a><br></div>
-
 <hr>
 <h2 id="一、JavaScript有哪些作用域类型"><a href="#一、JavaScript有哪些作用域类型" class="headerlink" title="一、JavaScript有哪些作用域类型"></a>一、JavaScript有哪些作用域类型</h2><p>对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。</p>
 <p>词法作用域就是定义在词法阶段的作用域，当词法分析器处理代码的时候会保持作用域不变。在表现上，词法作用域的函数中遇到既不是形式参数也不是函数内部定义的局部变量的变量时，会自动去函数定义时的环境中查询（即沿作用域链）。</p>
@@ -1023,7 +973,7 @@ foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span
     
     <summary type="html">
     
-      &lt;p&gt;还记得最开始接触JavaScript时，只是会用&lt;code&gt;document.getElementById(&amp;quot;&amp;quot;)&lt;/code&gt;这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开
+      对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。
     
     </summary>
     
@@ -1035,7 +985,7 @@ foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span
     <link href="https://ontides.github.io/2016/10/03/%E5%8E%9F-JavaScript%E4%B8%AD%E7%9A%84LHS%E6%9F%A5%E8%AF%A2%E5%92%8CRHS%E6%9F%A5%E8%AF%A2/"/>
     <id>https://ontides.github.io/2016/10/03/原-JavaScript中的LHS查询和RHS查询/</id>
     <published>2016-10-03T02:22:13.000Z</published>
-    <updated>2017-02-16T05:24:45.000Z</updated>
+    <updated>2017-02-16T05:30:28.000Z</updated>
     
     <content type="html"><![CDATA[<p>JavaScript中在预编译后执行代码时对变量的查询分为LHS（Left-Hand-Side）查询和RHS(Right-Hand-Side)查询。</p>
 <hr>
@@ -1068,9 +1018,7 @@ foo(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
     
     <summary type="html">
     
-      &lt;p&gt;JavaScript中在预编译后执行代码时对变量的查询分为LHS（Left-Hand-Side）查询和RHS(Right-Hand-Side)查询。&lt;/p&gt;
-&lt;hr&gt;
-&lt;h3 id=&quot;一、LHS和RHS有什么区别？&quot;&gt;&lt;a href=&quot;#一、LHS和RHS有什么区别？&quot; c
+      Welcome to Hexo! This is your very first post.
     
     </summary>
     

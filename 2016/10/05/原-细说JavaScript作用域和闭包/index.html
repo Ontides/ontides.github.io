@@ -15,16 +15,16 @@
 
 
 
-<meta name="description" content="还记得最开始接触JavaScript时，只是会用document.getElementById(&amp;quot;&amp;quot;)这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认">
+<meta name="description" content="对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[原]细说JavaScript作用域和闭包">
 <meta property="og:url" content="https://ontides.github.io/2016/10/05/原-细说JavaScript作用域和闭包/index.html">
 <meta property="og:site_name" content="Ontides's Blog">
-<meta property="og:description" content="还记得最开始接触JavaScript时，只是会用document.getElementById(&amp;quot;&amp;quot;)这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认">
-<meta property="og:updated_time" content="2017-02-16T05:24:45.000Z">
+<meta property="og:description" content="对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。">
+<meta property="og:updated_time" content="2017-02-16T05:30:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[原]细说JavaScript作用域和闭包">
-<meta name="twitter:description" content="还记得最开始接触JavaScript时，只是会用document.getElementById(&amp;quot;&amp;quot;)这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认">
+<meta name="twitter:description" content="对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -306,33 +306,6 @@
         <p>还记得最开始接触JavaScript时，只是会用<code>document.getElementById(&quot;&quot;)</code>这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认识到在前后端分离的时候，前端原来可以做到这么多东西，诸如模块，路由，依赖注入，双向绑定这样的词汇让我感到陌生而不知所措。即便是我已经在那个项目中使用AngularJS中上面所说的那些特性，我对AngularJS还是充满了困惑——我不清楚AngularJS是如何实现的。</p>
 <p>审视自己对JavaScript浅薄认识，我意识到自己应该去先把js语言本身好好学习一下。确实，在较为仔细地学习了ECMAScript后，我发现，我开始理解模块的实现，对如<code>.apply()</code>，<code>.bind()</code>等用法的了解让我对如何写出更好的js代码有了更多的理解。当然，现在我也只是入门水平，还需要不断学习和提高。</p>
 <p>这篇文章包含着我对javascript作用域和闭包的理解，写的过程也是整理和归纳的过程，以后也会用这种方式来归纳总结自己所学所想，希望自己能不断进步吧。</p>
-<hr>
-<div class="toc"><br><br><em>   </em>   <a href="#一javascript有哪些作用域类型">一JavaScript有哪些作用域类型</a><br>    <em>   <a href="#二作用域与标识符查询">二作用域与标识符查询</a>
-
-                </em>   <a href="#执行环境与作用域链">执行环境与作用域链</a><br>        <em>   <a href="#标识符查询">标识符查询</a>
-
-        </em>   <a href="#三可以形成独立作用域的结构">三可以形成独立作用域的结构</a><br><br>                <em>   <a href="#函数作用域">函数作用域</a>
-
-                        </em>   <a href="#利用函数内部对外部的隐藏">利用函数内部对外部的隐藏</a><br>            <em>   <a href="#匿名函数">匿名函数</a>
-
-                </em>   <a href="#块作用域">块作用域</a><br><br>                        <em>   <a href="#no-block-level-scopes">No Block-Level Scopes</a>
-            </em>   <a href="#with">with</a><br>            <em>   <a href="#trycatch">trycatch</a>
-            </em>   <a href="#letconst">letconst</a><br><br>        <em>   <a href="#四提升">四提升</a>
-
-                </em>   <a href="#提升的表现">提升的表现</a><br>        <em>   <a href="#提升的优先级">提升的优先级</a>
-        </em>   <a href="#提升的深层原因">提升的深层原因</a><br><br>        <em>   <a href="#五跨越词法作用域的两种机制">五跨越词法作用域的两种机制</a>
-
-                </em>   <a href="#eval">eval</a><br>        <em>   <a href="#with-1">with</a>
-
-        </em>   <a href="#六闭包与模块机制">六闭包与模块机制</a><br><br>                <em>   <a href="#闭包">闭包</a>
-
-                        </em>   <a href="#什么是闭包">什么是闭包</a><br>            <em>   <a href="#闭包相关的问题">闭包相关的问题</a>
-
-                                </em>   <a href="#问题">问题</a><br>                <em>   <a href="#解决办法">解决办法</a>
-
-                </em>   <a href="#模块机制">模块机制</a><br><br>                        <em>   <a href="#简单的模块">简单的模块</a>
-            </em>   <a href="#单例模式">单例模式</a><br>            *   <a href="#现代模块">现代模块</a><br></div>
-
 <hr>
 <h2 id="一、JavaScript有哪些作用域类型"><a href="#一、JavaScript有哪些作用域类型" class="headerlink" title="一、JavaScript有哪些作用域类型"></a>一、JavaScript有哪些作用域类型</h2><p>对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。</p>
 <p>词法作用域就是定义在词法阶段的作用域，当词法分析器处理代码的时候会保持作用域不变。在表现上，词法作用域的函数中遇到既不是形式参数也不是函数内部定义的局部变量的变量时，会自动去函数定义时的环境中查询（即沿作用域链）。</p>
@@ -738,7 +711,7 @@ foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span
         <p><span>本文标题:</span><a href="/2016/10/05/原-细说JavaScript作用域和闭包/">[原]细说JavaScript作用域和闭包</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
         <p><span>发布时间:</span>2016-10-05, 10:36:19</p>
-        <p><span>最后更新:</span>2017-02-16, 13:24:45</p>
+        <p><span>最后更新:</span>2017-02-16, 13:30:04</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/05/原-细说JavaScript作用域和闭包/" title="[原]细说JavaScript作用域和闭包">https://ontides.github.io/2016/10/05/原-细说JavaScript作用域和闭包/</a>
             <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/10/05/原-细说JavaScript作用域和闭包/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>

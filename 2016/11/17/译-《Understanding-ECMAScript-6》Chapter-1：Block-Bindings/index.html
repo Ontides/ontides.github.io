@@ -15,34 +15,16 @@
 
 
 
-<meta name="description" content="《理解 ECMAScript 6》第一章：块绑定
-   理解 ECMAScript 6第一章块绑定
-
-           1 变量声明和提升       2 块级声明
-
-                   21 let声明           22 没有重复声明
-           23 常量声明                           const声明和let声明">
+<meta name="description" content="以前，变量声明方式是JavaScript编程中一个令人困惑的部分。在大部分类C语言里，变量（或者说作用域）在声明的地方生成。但是在JavaScript中，情况就不是这样了。变量实际上创建的地方取决于你声明它的方式，而ECMAScript 6提供了一些可选的方式来让你更容易地控制作用域。本章将会告诉你为什么经典的`var`声明会令人感到困惑，并且会介绍ECMAScript 6中的块级作用域，然后会给">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings">
 <meta property="og:url" content="https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/index.html">
 <meta property="og:site_name" content="Ontides's Blog">
-<meta property="og:description" content="《理解 ECMAScript 6》第一章：块绑定
-   理解 ECMAScript 6第一章块绑定
-
-           1 变量声明和提升       2 块级声明
-
-                   21 let声明           22 没有重复声明
-           23 常量声明                           const声明和let声明">
-<meta property="og:updated_time" content="2017-02-16T05:24:45.000Z">
+<meta property="og:description" content="以前，变量声明方式是JavaScript编程中一个令人困惑的部分。在大部分类C语言里，变量（或者说作用域）在声明的地方生成。但是在JavaScript中，情况就不是这样了。变量实际上创建的地方取决于你声明它的方式，而ECMAScript 6提供了一些可选的方式来让你更容易地控制作用域。本章将会告诉你为什么经典的`var`声明会令人感到困惑，并且会介绍ECMAScript 6中的块级作用域，然后会给">
+<meta property="og:updated_time" content="2017-02-16T05:30:26.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings">
-<meta name="twitter:description" content="《理解 ECMAScript 6》第一章：块绑定
-   理解 ECMAScript 6第一章块绑定
-
-           1 变量声明和提升       2 块级声明
-
-                   21 let声明           22 没有重复声明
-           23 常量声明                           const声明和let声明">
+<meta name="twitter:description" content="以前，变量声明方式是JavaScript编程中一个令人困惑的部分。在大部分类C语言里，变量（或者说作用域）在声明的地方生成。但是在JavaScript中，情况就不是这样了。变量实际上创建的地方取决于你声明它的方式，而ECMAScript 6提供了一些可选的方式来让你更容易地控制作用域。本章将会告诉你为什么经典的`var`声明会令人感到困惑，并且会介绍ECMAScript 6中的块级作用域，然后会给">
 
 <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
 
@@ -322,21 +304,6 @@
       
           
         <h1 id="《理解-ECMAScript-6》第一章：块绑定"><a href="#《理解-ECMAScript-6》第一章：块绑定" class="headerlink" title="《理解 ECMAScript 6》第一章：块绑定"></a>《理解 ECMAScript 6》第一章：块绑定</h1><hr>
-<div class="toc"><br><br><em>   <a href="#理解-ecmascript-6第一章块绑定">理解 ECMAScript 6第一章块绑定</a>
-
-        </em>   <a href="#11-变量声明和提升">1 变量声明和提升</a><br>    <em>   <a href="#12-块级声明">2 块级声明</a>
-
-                </em>   <a href="#121-let声明">21 let声明</a><br>        <em>   <a href="#122-没有重复声明">22 没有重复声明</a>
-        </em>   <a href="#123-常量声明">23 常量声明</a><br><br>                        <em>   <a href="#const声明和let声明">const声明和let声明</a>
-            </em>   <a href="#使用const声明对象">使用const声明对象</a><br><br>                <em>   <a href="#124-暂时性死区">24 暂时性死区</a>
-
-        </em>   <a href="#13-循环中的块绑定">3 循环中的块绑定</a><br><br>                <em>   <a href="#131-循环中的函数">31 循环中的函数</a>
-        </em>   <a href="#132-循环中的let声明">32 循环中的let声明</a><br>        <em>   <a href="#133-循环中的const声明">33 循环中的const声明</a>
-
-        </em>   <a href="#14-全局块绑定">4 全局块绑定</a><br>    <em>   <a href="#15-块绑定的最佳实践">5 块绑定的最佳实践</a>
-    </em>   <a href="#16-小结">6 小结</a><br></div>
-
-<hr>
 <p>以前，变量声明方式是JavaScript编程中一个令人困惑的部分。在大部分类C语言里，变量（或者说作用域）在声明的地方生成。但是在JavaScript中，情况就不是这样了。变量实际上创建的地方取决于你声明它的方式，而ECMAScript 6提供了一些可选的方式来让你更容易地控制作用域。本章将会告诉你为什么经典的<code>var</code>声明会令人感到困惑，并且会介绍ECMAScript 6中的块级作用域，然后会给出如何使用它们的最佳实践。</p>
 <h2 id="1-1-变量声明和提升"><a href="#1-1-变量声明和提升" class="headerlink" title="1.1 变量声明和提升"></a>1.1 变量声明和提升</h2><p>使用<code>var</code>的变量声明，会被当做处于当前所在函数的顶部（如果在函数外声明的话则是全局作用域）中的声明那样处理———无论它实际的声明位置在哪，这被称作<em>提升</em>。为了展示提升做了什么，看看下面的函数定义：</p>
 <pre><code>&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;getValue&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(condition)&lt;/span&gt; {&lt;/span&gt;
@@ -638,7 +605,7 @@ console.log(window.ncz);        <span class="hljs-comment">// "Hi!"</span>`</pre
         <p><span>本文标题:</span><a href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/">[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
         <p><span>发布时间:</span>2016-11-17, 12:32:43</p>
-        <p><span>最后更新:</span>2017-02-16, 13:24:45</p>
+        <p><span>最后更新:</span>2017-02-16, 13:30:26</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/" title="[译]《Understanding ECMAScript 6》Chapter 1：Block Bindings">https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/</a>
             <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/11/17/译-《Understanding-ECMAScript-6》Chapter-1：Block-Bindings/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
