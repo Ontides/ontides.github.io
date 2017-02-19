@@ -333,155 +333,60 @@
     <link href="https://ontides.github.io/2016/11/08/JavaScript%E4%B8%AD%E7%9A%84this/"/>
     <id>https://ontides.github.io/2016/11/08/JavaScript中的this/</id>
     <published>2016-11-07T16:20:31.000Z</published>
-    <updated>2017-02-16T05:43:36.000Z</updated>
+    <updated>2017-02-19T06:30:50.000Z</updated>
     
     <content type="html"><![CDATA[<p>学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。</p>
+<hr>
+<p>[TOC]</p>
 <hr>
 <h2 id="一、this的起源"><a href="#一、this的起源" class="headerlink" title="一、this的起源"></a>一、this的起源</h2><p>了解<code>this</code>是怎么来的，对更好地理解<code>this</code>还是很重要的。</p>
 <p>当一个函数被调用的时候，也就是执行流进入一个函数的时候，会自动创建一个被称为执行上下文的记录（其实这个时候也就产生了作用域链），这个记录里包含了各种必要信息，比如函数的调用方式，函数的参数（也就是<code>arguments</code>）等，<code>this</code>就包含在这个信息里。</p>
 <h2 id="二、对this的误解"><a href="#二、对this的误解" class="headerlink" title="二、对this的误解"></a>二、对this的误解</h2><p>我刚接触this的时候，我简单地觉得this就是指向函数所在的对象。比如：</p>
-<pre><code>&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; myObj = {
-    message: &lt;span class=&quot;hljs-string&quot;&gt;&quot;Hi, Ontides!&quot;&lt;/span&gt;,
-    say: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;say&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-        console.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.message);
-    }
-};
-
-myObj.say();    &lt;span class=&quot;hljs-comment&quot;&gt;//Hi, Ontides!&lt;/span&gt;
-`&lt;/pre&gt;
-
-这里确实如所预想的那样，打印出了“Hi, Ontides”，但是，函数并不一定在一个对象中，如果是一个全局函数，那么它里面的this指向就不能简单地理解为“指向函数所在的对象”那么了。
-
-实际上，JavaScript中this的指向和this所在函数定义的位置没有任何关系（ES5及以前，因为ES6中的箭头函数不是这样，稍后会说）。我们之所以会认为this和函数所声明的地方有关，是因为在JavaScript中的作用域遵循词法作用域，因此，我们很容易使用词法作用域的分析方式去分析this的具体指向。实际上，**this的处理方式和动态作用域的处理方式相同**。this的指向取决于函数调用的位置，而不是函数定义的位置。
-
-## 三、this真正的指向
-
-上面提到，函数调用的位置决定了this绑定的对象。在JavaScript中，对应函数四种调用方式，this的绑定一共有四种方式，分别为隐式绑定，显式绑定、new绑定和默认绑定。
-
-### 1\. 隐式绑定
-
-当函数的调用位置具有上下文对象，或者说函数是在一个对象下调用的时候，this会被隐式绑定到这个上下文对象上。如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    console.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.a);
-}
-
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; obj = {
-    a: &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;,
-    foo: foo
-};
-
-&lt;span class=&quot;hljs-comment&quot;&gt;//这里this指向了obj&lt;/span&gt;
-obj.foo()   &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
-`&lt;/pre&gt;
-
-### 2\. 显式绑定
-
-当一个函数使用`call`或者`apply`的方式调用的时候，this会被显式地绑定到`call`或者`apply`所指定的对象。如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;;
-
-&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    console.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.a);
-}
-
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; obj = {
-    a: &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;
-};
-
-foo.call(obj);  &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
-`&lt;/pre&gt;
-
-这里因为函数foo再调用的时候使用`.call()`的方式调用，所以this指向了obj而不是默认的全局对象。
-
-### 3\. new绑定
-
-当对函数进行构造调用的时候（即使用new操作符进行调用），this的指向会发生改变。为了更好阐述new绑定，这里先阐述一下对函数构造调用的的过程。
-
-当对一个函数尽兴构造调用的时候，会经历以下步骤：
-</code></pre><ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myObj = &#123;</div><div class="line">    <span class="attr">message</span>: <span class="string">"Hi, Ontides!"</span>,</div><div class="line">    <span class="attr">say</span>: <span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.message);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">myObj.say();    <span class="comment">//Hi, Ontides!</span></div></pre></td></tr></table></figure>
+<p>这里确实如所预想的那样，打印出了“Hi, Ontides”，但是，函数并不一定在一个对象中，如果是一个全局函数，那么它里面的this指向就不能简单地理解为“指向函数所在的对象”那么了。</p>
+<p>实际上，JavaScript中this的指向和this所在函数定义的位置没有任何关系（ES5及以前，因为ES6中的箭头函数不是这样，稍后会说）。我们之所以会认为this和函数所声明的地方有关，是因为在JavaScript中的作用域遵循词法作用域，因此，我们很容易使用词法作用域的分析方式去分析this的具体指向。实际上，<strong>this的处理方式和动态作用域的处理方式相同</strong>。this的指向取决于函数调用的位置，而不是函数定义的位置。</p>
+<p>##三、this真正的指向</p>
+<p>上面提到，函数调用的位置决定了this绑定的对象。在JavaScript中，对应函数四种调用方式，this的绑定一共有四种方式，分别为隐式绑定，显式绑定、new绑定和默认绑定。</p>
+<h3 id="1-隐式绑定"><a href="#1-隐式绑定" class="headerlink" title="1. 隐式绑定"></a>1. 隐式绑定</h3><p>当函数的调用位置具有上下文对象，或者说函数是在一个对象下调用的时候，this会被隐式绑定到这个上下文对象上。如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">foo</span>: foo</div><div class="line">&#125;;</div><div class="line"><span class="comment">//这里this指向了obj</span></div><div class="line">obj.foo()   <span class="comment">//2</span></div></pre></td></tr></table></figure>
+<h3 id="2-显式绑定"><a href="#2-显式绑定" class="headerlink" title="2. 显式绑定"></a>2. 显式绑定</h3><p>当一个函数使用<code>call</code>或者<code>apply</code>的方式调用的时候，this会被显式地绑定到<code>call</code>或者<code>apply</code>所指定的对象。如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">3</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span></div><div class="line">&#125;;</div><div class="line">foo.call(obj);  <span class="comment">//2</span></div></pre></td></tr></table></figure>
+<p>这里因为函数foo再调用的时候使用<code>.call()</code>的方式调用，所以this指向了obj而不是默认的全局对象。</p>
+<h3 id="3-new绑定"><a href="#3-new绑定" class="headerlink" title="3. new绑定"></a>3. new绑定</h3><p>当对函数进行构造调用的时候（即使用new操作符进行调用），this的指向会发生改变。为了更好阐述new绑定，这里先阐述一下对函数构造调用的的过程。</p>
+<p>当对一个函数尽兴构造调用的时候，会经历以下步骤：</p>
+<ol>
 <li>创建一个新的对象</li>
 <li>将构造函数的作用域赋给新的对象</li>
 <li>执行构造函数中的代码</li>
-<li><p>返回新对象</p>
+<li>返回新对象</li>
+</ol>
 <p>在步骤2中this被绑定到了这个新对象。</p>
 <h3 id="4-默认绑定"><a href="#4-默认绑定" class="headerlink" title="4. 默认绑定"></a>4. 默认绑定</h3><p>当前几种绑定都不适用的情况下JavaScript引擎会对this执行默认绑定。这里的函数调用方式是独立函数调用，如：</p>
-<pre class="prettyprint">`<span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span>;
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
-    console.log(<span class="hljs-keyword">this</span>.name);
-}
-foo();  <span class="hljs-comment">//1</span>
-`</pre>
-
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</div><div class="line">&#125;</div><div class="line">foo();  <span class="comment">//1</span></div></pre></td></tr></table></figure>
 <p>在默认绑定的情况下this被绑定到了全局对象，因为全局变量a是全局对象的一个属性，因此这里输出了a中的内容。</p>
 <p>这里需要注意的是，再严格模式下，默认绑定将不会绑定到全局对象上，而会绑定到<code>undefined</code>，如：</p>
-<pre class="prettyprint">`<span class="hljs-pi">"use strict"</span>;
-<span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
-    console.log(<span class="hljs-keyword">this</span>.a);
-}
-foo(); <span class="hljs-comment">//TypeError: undefined is not an object</span>
-`</pre>
-
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">"use strict"</span>;</div><div class="line"><span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line">foo(); <span class="comment">//TypeError: undefined is not an object</span></div></pre></td></tr></table></figure>
 <p>这里抛出了类型错误的提示，因为this被绑定到<code>undefined</code>，而<code>undefined</code>不是一个对象。</p>
 <h2 id="四、this绑定优先级"><a href="#四、this绑定优先级" class="headerlink" title="四、this绑定优先级"></a>四、this绑定优先级</h2><p>this绑定一共四条规则，那么在判断this绑定的时候应该怎样运用规则呢？通过this绑定的优先级来判断。</p>
 <p>优先级从高到低分别为 new绑定 &gt; 显式绑定 &gt; 隐式绑定 &gt; 默认绑定。</p>
 <h2 id="五、值得注意的几个点"><a href="#五、值得注意的几个点" class="headerlink" title="五、值得注意的几个点"></a>五、值得注意的几个点</h2><h3 id="1-小心隐性绑定"><a href="#1-小心隐性绑定" class="headerlink" title="1. 小心隐性绑定"></a>1. 小心隐性绑定</h3><p>有些情况一些函数看起来像是隐性绑定，而实际上是应用了默认绑定。如：</p>
-<pre class="prettyprint">`<span class="hljs-keyword">var</span> a = <span class="hljs-number">3</span>;
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
-    console.log(<span class="hljs-keyword">this</span>.a);
-}
-
-<span class="hljs-keyword">var</span> obj = {
-    a: <span class="hljs-number">2</span>,
-    foo: foo
-};
-
-<span class="hljs-keyword">var</span> bar = obj.foo;
-
-obj.foo();  <span class="hljs-comment">//2</span>
-bar();      <span class="hljs-comment">//3</span>`</pre>
-
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">3</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">foo</span>: foo</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> bar = obj.foo;</div><div class="line">obj.foo();  <span class="comment">//2</span></div><div class="line">bar();      <span class="comment">//3</span></div></pre></td></tr></table></figure>
 <p>这里虽然把<code>obj.foo</code>赋给了<code>bar</code>，但是实际上只是把对<code>foo</code>的引用赋给了<code>bar</code>，因此这里<code>bar</code>的调用只是普通的独立函数调用。</p>
 <p>还有一种更为常见而容易出错的情况发生在传入回调函数时：</p>
-<pre class="prettyprint">`<span class="hljs-keyword">var</span> a = <span class="hljs-number">3</span>;
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
-    console.log(<span class="hljs-keyword">this</span>.a);
-}
-
-<span class="hljs-keyword">var</span> obj = {
-    a: <span class="hljs-number">2</span>,
-    foo: foo
-};
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doFoo</span><span class="hljs-params">(fn)</span>{</span>
-    fn();
-}
-
-doFoo(obj.foo); <span class="hljs-comment">//3</span>`</pre>
-
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">3</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">foo</span>: foo</div><div class="line">&#125;;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">doFoo</span>(<span class="params">fn</span>)</span>&#123;</div><div class="line">    fn();</div><div class="line">&#125;</div><div class="line">doFoo(obj.foo); <span class="comment">//3</span></div></pre></td></tr></table></figure>
 <p>同样，如果理解函数名是对函数的引用的话，这个结果就容易理解了呃。传递到doFoo的参数是函数foo，函数的调用方式是独立调用，因此这里的this并不适用隐形绑定规则，而是采用默认绑定的规则。</p>
 <h3 id="2-箭头函数"><a href="#2-箭头函数" class="headerlink" title="2. 箭头函数"></a>2. 箭头函数</h3><p>ES6中的箭头函数不适用与上面四个规则。</p>
 <p>关于箭头有两点需要注意：</p>
-</li>
-<li><p>箭头函数中的this由函数所在的外部作用域来决定的<br>这里箭头函数中this遵循词法作用域的规则。如：<br><pre class="prettyprint">`<span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;<br><span class="hljs-keyword">var</span> obj = {</p>
-<pre><code>a: &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;,
-foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    setTimeout(()=&amp;gt;{
-        console.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.a);
-    },&lt;span class=&quot;hljs-number&quot;&gt;30&lt;/span&gt;);
-}
-</code></pre><p>}<br>obj.foo();  <span class="hljs-comment">//1</span></p>
-</li>
+<ol>
+<li>箭头函数中的this由函数所在的外部作用域来决定的</li>
 </ol>
+<p>这里箭头函数中this遵循词法作用域的规则。如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">1</span>,</div><div class="line">    <span class="attr">foo</span>: <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">        &#125;,<span class="number">30</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">obj.foo();  <span class="comment">//1</span></div></pre></td></tr></table></figure>
 <p>这里定时器中的this并没有指向全局对象，是绑定到obj，可以看出是继承了外层函数中的this的绑定对象。</p>
 <ol>
 <li>箭头函数的this绑定无法修改</li>
 </ol>
-<p>箭头函数使用自己独特的this绑定原则，不能通过<code>.call()</code>等方式改变this指向。<br>            <div><br>                作者：ontides 发表于2016/11/8 0:20:31 <a href="http://blog.csdn.net/ontides/article/details/53075119">原文链接</a><br>            </div><br>            <div><br>            阅读：45 评论：0 <a href="http://blog.csdn.net/ontides/article/details/53075119#comments">查看评论</a><br>            </div></p>
+<p>箭头函数使用自己独特的this绑定原则，不能通过<code>.call()</code>等方式改变this指向。</p>
 ]]></content>
     
     <summary type="html">
@@ -500,7 +405,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     <link href="https://ontides.github.io/2016/10/17/%E8%AF%91-%E3%80%8AUnderstanding-ECMAScript-6%E3%80%8B%E2%80%94%E2%80%94Introduction/"/>
     <id>https://ontides.github.io/2016/10/17/译-《Understanding-ECMAScript-6》——Introduction/</id>
     <published>2016-10-16T16:49:08.000Z</published>
-    <updated>2017-02-16T05:42:42.000Z</updated>
+    <updated>2017-02-19T06:29:25.000Z</updated>
     
     <content type="html"><![CDATA[<h1 id="《理解-ECMAScript-6》——简介"><a href="#《理解-ECMAScript-6》——简介" class="headerlink" title="《理解 ECMAScript 6》——简介"></a>《理解 ECMAScript 6》——简介</h1><p>JavaScript的核心语言特性是在一个叫做ECMA-262的标准中定义的。在这个标准中定义的语言叫做ECMAScript。你所知道的在浏览器中和Node.js中的JavaScript其实是ECMAScript的父集。浏览器和Node.js通过增加对象和方法来增加更多的功能，不过语言的核心还是在ECMAScript中定义的。ECMA-262标准的不断发展对作为整体的JavaScript的成功至关重要，而这本书包含了这个语言近来最重要的更新——ECMAScript6的诸多改变。</p>
 <h2 id="一、走向-ECMAScript-6"><a href="#一、走向-ECMAScript-6" class="headerlink" title="一、走向 ECMAScript 6"></a>一、走向 ECMAScript 6</h2><p>2007年，JavaScript处在一个发展的关键时刻。当饱受欢迎的Ajax引领着动态Web应用的新时代时，JavaScript自从1999年第三版的ECMA-262发布后一直没有变化。作为负责推动ECMAScript发展进程的委员会，TC-39为 ECMAScript 4 制定了大量的规范草案。新的特性包括新语法、模块、类、类的继承、对象私有变量，以及可选类型注释等等。</p>
@@ -554,13 +459,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
 <p>还有，感谢每一位在Patreon: Casey Visco上支持这本书的人。</p>
 <hr>
 <p>原文地址：<a href="https://github.com/nzakas/understandinges6/blob/master/manuscript/00-Introduction.md">Understanding ECMAScript 6: Introduction</a></p>
-<pre><code>&lt;div&gt;
-    作者：ontides 发表于2016/10/17 0:49:08 [原文链接](http://blog.csdn.net/ontides/article/details/52834577)
-&lt;/div&gt;
-&lt;div&gt;
-阅读：351 评论：0 [查看评论](http://blog.csdn.net/ontides/article/details/52834577#comments)
-&lt;/div&gt;
-</code></pre>]]></content>
+]]></content>
     
     <summary type="html">
     
@@ -580,406 +479,72 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     <link href="https://ontides.github.io/2016/10/05/%E7%BB%86%E8%AF%B4JavaScript%E4%BD%9C%E7%94%A8%E5%9F%9F%E5%92%8C%E9%97%AD%E5%8C%85/"/>
     <id>https://ontides.github.io/2016/10/05/细说JavaScript作用域和闭包/</id>
     <published>2016-10-05T02:36:19.000Z</published>
-    <updated>2017-02-16T05:44:10.000Z</updated>
+    <updated>2017-02-19T06:29:52.000Z</updated>
     
-    <content type="html"><![CDATA[<p>还记得最开始接触JavaScript时，只是会用<code>document.getElementById(&quot;&quot;)</code>这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认识到在前后端分离的时候，前端原来可以做到这么多东西，诸如模块，路由，依赖注入，双向绑定这样的词汇让我感到陌生而不知所措。即便是我已经在那个项目中使用AngularJS中上面所说的那些特性，我对AngularJS还是充满了困惑——我不清楚AngularJS是如何实现的。</p>
+    <content type="html"><![CDATA[<p>文章开头说点有用没用的，还记得最开始接触JavaScript时，只是会用<code>document.getElementById(&quot;&quot;)</code>这种DOM操作来做点简单特效，但仅仅如此已经让我欣喜。后来的知道了原来可以利用ajax技术来实现无刷新获取服务端数据，这让我开始觉得前端还是有好多事可以做的，在之后因为老师的一个项目的关系接触了AngularJS，便开始了AngularJS的学习。AngularJS让我深刻地认识到在前后端分离的时候，前端原来可以做到这么多东西，诸如模块，路由，依赖注入，双向绑定这样的词汇让我感到陌生而不知所措。即便是我已经在那个项目中使用AngularJS中上面所说的那些特性，我对AngularJS还是充满了困惑——我不清楚AngularJS是如何实现的。</p>
 <p>审视自己对JavaScript浅薄认识，我意识到自己应该去先把js语言本身好好学习一下。确实，在较为仔细地学习了ECMAScript后，我发现，我开始理解模块的实现，对如<code>.apply()</code>，<code>.bind()</code>等用法的了解让我对如何写出更好的js代码有了更多的理解。当然，现在我也只是入门水平，还需要不断学习和提高。</p>
-<p>这篇文章包含着我对javascript作用域和闭包的理解，写的过程也是整理和归纳的过程，以后也会用这种方式来归纳总结自己所学所想，希望自己能不断进步吧。</p>
-<hr>
-<h2 id="一、JavaScript有哪些作用域类型"><a href="#一、JavaScript有哪些作用域类型" class="headerlink" title="一、JavaScript有哪些作用域类型"></a>一、JavaScript有哪些作用域类型</h2><p>对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。</p>
+<p>这篇文章包含着我对javascript作用域和闭包的理解，写的过程也是整理和归纳的过程，以后也会用这种方式来归纳总结自己所学所想，希望自己能不断进步吧，如果文章能给其他人带来点用处，我也会很开心的。</p>
+<p>##一、JavaScript有哪些作用域类型<br>对于一门编程语言来说，作用域主要有两种模型，即词法作用域（Lexical Scope）和动态作用域（Dynamic Scope）。而词法作用域,即静态作用域（Static Scope），被目前JavaScript在内的大部分编程语言所采用，而动态作用域只有Bash脚本等少数编程语言在使用。</p>
 <p>词法作用域就是定义在词法阶段的作用域，当词法分析器处理代码的时候会保持作用域不变。在表现上，词法作用域的函数中遇到既不是形式参数也不是函数内部定义的局部变量的变量时，会自动去函数定义时的环境中查询（即沿作用域链）。</p>
-<p>还是举两个例子吧：</p>
-<pre><code>&lt;span class=&quot;hljs-comment&quot;&gt;//这是词法作用域&lt;/span&gt;
-&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
-    console.log(a);    &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
-}
-&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;;
-    foo();
-}
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
-bar();`&lt;/pre&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-comment&quot;&gt;//这是动态作用域&lt;/span&gt;
-&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
-    console.log(a);     &lt;span class=&quot;hljs-comment&quot;&gt;//3&lt;/span&gt;
-}
-&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt; {&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;;
-    foo();
-}
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
-bar();`&lt;/pre&gt;
-
-## 二、作用域与标识符查询
-
-作用域和表示符查询紧密相关，表示符正是依靠这样一套严密的作用域规则而得以有条理地查询。而对于作用域，需要理解几个词：执行环境，变量对象，活动对象，作用域链。
-
-### 执行环境与作用域链
-
-首先解释执行环境吧，执行环境定义了在这个执行环境中变量或者函数有权访问的数据，决定了它们各自的行为。在js中执行环境的结构由全局执行环境和一级级内部嵌套的子执行环境组成。其中全局执行环境由ECMAScript实现所在的宿主环境决定，在浏览器中为window对象，在Node中是global对象。每个函数都包含着自己的执行环境，一个个执行环境组成了一个执行环境栈，当执行流进入一个函数时，该函数的执行环境会被推入环境栈中，函数执行之后该环境又会被从环境栈中弹出，这便是ECMAScript执行流的机制。
-
-每个执行环境都包含一个变量对象，它保存着环境中定义的所有变量和函数。当一个执行环境的代码执行的时候会为它的变量对象创建一个由当前执行环境沿着环境栈到全局执行环境的作用域链，作用域链保证了对当前执行环境有权访问的所有变量和函数的 **有序** 访问。如果当前执行环境是一个函数，那么该函数的活动对象就会成为这个执行环境的变量对象。
-
-而对除了全局执行环境外的执行对象，活动对象最前端是arguments对象，而作用域链沿着一层层的被包含环境的变量对象沿伸到全局执行环境的变量对象。
-
-### 标识符查询
-
-了解了执行环境和作用域链，标识符的查询就很好理解了，js引擎在遇到一个标识符的时候根据作用域链沿着变量对象从前端到后端进行查询（其实就是从子作用域逐层向父作用域查询），一旦遇到匹配的标识符便会**立即停止**。如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;;
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-        &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
-        console.log(a);
-    }
-    a = &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;;
-    bar();
-}
-foo();  &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;`&lt;/pre&gt;
-
-该例中在console.log对a进行RHS查询时，在bar函数的作用域内便查询到了标识符a，因此便立即停止标识符查询，所以访问不到foo函数的标识符a。这种现象是标识符的遮蔽效应，在多层的嵌套作用域内可以定义同名的标识符，遮蔽效应使得内部的标识符可以遮蔽外层表示符。
-
-## 三、可以形成独立作用域的结构
-
-在JavaScript中，可以形成独立作用域的结构有两类，函数作用域和块作用域。先说说函数作用域吧。
-
-### 函数作用域
-
-函数作用域是js中最常见的作用域，每一个函数都拥有一个作用域，而属于这个函数的变量都能在整个函数的范围内访问（当然也能访问），但是在函数外则无法访问函数内的任何变量——除非你在函数执行时把一个闭包返回到函数体外。这种函数内部变量对外的隐藏作用使得同级作用域同名标识符之间的冲突得到避免，这样，也促成了模块机制的良好运行。
-
-#### 利用函数内部对外部的隐藏
-
-如果想创建一个封闭的作用域，让这个作用域内的变量不被外部访问，利用**立即执行函数表达式**（IIFE）便可实现。如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;;
-(&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;IIFE&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
-    console.log(a); &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
-})();   &lt;span class=&quot;hljs-comment&quot;&gt;//立即执行&lt;/span&gt;
-console.log(a);     &lt;span class=&quot;hljs-comment&quot;&gt;//1&lt;/span&gt;`&lt;/pre&gt;
-
-这个函数表达式在声明后立即执行，这样函数体内的语句都得到了执行且对外部的变量没有影响。其实，JS中的模块也利用了这点。JS模块还是放到最后说吧。
-
-#### 匿名函数
-
-JavaScript中的函数表达式存在具名函数表达式和匿名函数表达式两种，而函数声明则必须具名。匿名函数有什么用呢？让我们不用去冥思苦想标识符怎么取。如上面的例子中的IIFE函数，该函数即使去掉函数名，程序也可以正常运行，因为它的函数名在这种情况起到作用不大。
-
-虽然匿名函数写起来十分便捷，但是基于以下原因，始终给每个函数命名是值得推荐的。 
-
-1\. 在没有函数名的情况下，函数的递归调用等需要引用自身的时候，将会不得不用`arguments.callee`进行引用，而这在ES5之后便不被推荐使用了——甚至在严格模式下会抛出TypeError错误。 
-
-2\. 函数名的省略使得代码可读性下降
-
-说到了匿名函数，不得不提闭包，由于闭包内容较多，将在后面专门说明。
-
-### 块作用域
-
-除了最常见的函数作用域，JavaScript中的块作用域也可以创建出一个独立的作用域。可是，在 Nicholas C.Zakas 著的《Professional JavaScript for Web Developers(3rd Edition)》中说道：
-
-&gt; #### No Block-Level Scopes
-</code></pre><blockquote>
-<pre><code>JavaScript’s lack of block-level scopes is a common source of confusion. In other C-like languages, code blocks enclosed by brackets have their own scope (more accurately described as their own execution context in ECMAScript), allowing conditional definition of variables.
-</code></pre></blockquote>
-<pre><code>Nicholas 之所以说JavaScript没有块级作用域是因为他没把`with`和`try/catch`作为块级作用域看待，他在书中把这两个情况作为延长作用域链的手段。实际上，通过`with`和`try/catch`创建的独立作用域也算是块级作用域的形式，除了这两种外还可以利用ES6中的`let`和`const`也可以形成块级作用域。
-
-#### with
-
-通过with可以创建出的作用域仅在with声明中使用。如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; location = {
-    say: &lt;span class=&quot;hljs-string&quot;&gt;&apos;hello world&apos;&lt;/span&gt;
-};
-&lt;span class=&quot;hljs-keyword&quot;&gt;with&lt;/span&gt; (location){
-    console.log(say);&lt;span class=&quot;hljs-comment&quot;&gt;//hello world&lt;/span&gt;
-}
-console.log(say);&lt;span class=&quot;hljs-comment&quot;&gt;//抛出ReferenceError错误&lt;/span&gt;`&lt;/pre&gt;
-
-#### try/catch
-
-`try/catch`的catch分句会创建一个块级作用域，其中声明的变量只能在内部使用。如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;try&lt;/span&gt;{
-    &lt;span class=&quot;hljs-keyword&quot;&gt;throw&lt;/span&gt; {
-        say: &lt;span class=&quot;hljs-string&quot;&gt;&apos;hello world&apos;&lt;/span&gt;
-    }
-}
-&lt;span class=&quot;hljs-keyword&quot;&gt;catch&lt;/span&gt;(error){
-    console.log(error.say);&lt;span class=&quot;hljs-comment&quot;&gt;//hello world&lt;/span&gt;
-}
-console.log(error.say);&lt;span class=&quot;hljs-comment&quot;&gt;////抛出ReferenceError错误&lt;/span&gt;`&lt;/pre&gt;
-
-#### let/const
-
-ES6中引入的let和const关键字可以将变量绑定到任意由{}包含的代码块中。 
-
-以下例子可以看出用let声明变量和用var声明变量的区别：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-comment&quot;&gt;//变量用var声明&lt;/span&gt;
-&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;; i &amp;lt; &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;; i++){
-    console.log(i);
-}
-console.log(i);&lt;span class=&quot;hljs-comment&quot;&gt;//5&lt;/span&gt;
-
-&lt;span class=&quot;hljs-comment&quot;&gt;//变量用let声明&lt;/span&gt;
-&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; j = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;; j &amp;lt; &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;; j++){
-    console.log(j);
-}
-console.log(j);&lt;span class=&quot;hljs-comment&quot;&gt;//抛出ReferenceError错误&lt;/span&gt;`&lt;/pre&gt;
-
-当然，也可以直接绑定在块中，如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`{
-    &lt;span class=&quot;hljs-keyword&quot;&gt;let&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;10&lt;/span&gt;;
-    console.log(a);&lt;span class=&quot;hljs-comment&quot;&gt;//10&lt;/span&gt;
-}
-console.log(a);抛出&lt;span class=&quot;hljs-built_in&quot;&gt;ReferenceError&lt;/span&gt;错误`&lt;/pre&gt;
-
-const关键字定义的常量和let一样，能将其定义的常量绑定到{}包含的块级作用域中，就再举例子了。
-
-## 四、提升
-
-提升的概念比较简单，但是如果对js语言只是浅尝辄止的话，可能会理解不清。这里通过提升的表现，优先级和原因来简单说明js中的提升。
-
-### 提升的表现
-
-提升是变量或函数在同个作用域内表现出的可以先使用后定义的现象。先来看看变量提升：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-pi&quot;&gt;&quot;use strict&quot;&lt;/span&gt;;&lt;span class=&quot;hljs-comment&quot;&gt;//开启ES5的严格模式&lt;/span&gt;
-a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a;
-console.log(a);&lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;`&lt;/pre&gt;
-
-再看看函数提升：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-pi&quot;&gt;&quot;use strict&quot;&lt;/span&gt;;
-foo(&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;);&lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
-&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(n)&lt;/span&gt;{&lt;/span&gt;
-    console.log(n+&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;);
-}`&lt;/pre&gt;
-
-### 提升的优先级
-
-提升具有优先级，当一个作用域里对同个标识符既使用了变量声明，也使用了函数声明，那么函数声明会优先被提升。如下面的例子。 
-
-&lt;a&gt;&lt;/a&gt;
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`foo();&lt;span class=&quot;hljs-comment&quot;&gt;//1&lt;/span&gt;
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; foo;
-&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    console.log(&lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;);
-}
-foo = &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    console.log(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
-}`&lt;/pre&gt;
-
-### 提升的深层原因
-
-提升之所以存在，是因为JavaScript引擎在对代码解释前会进行预编译。在编译阶段，有一部分的工作就是找到所有的函数声明，并用合适的作用域把它们关联起来，这也是词法作用域的核心部分。有了预编译，在解释执行时，不再检测变量的声明，引擎在对变量进行LHS或RHS查询时会直接向编译阶段生成的作用域取得数据。
-
-也就是说对于`var a = 1’;`这个语句来说，js引擎会识别为两个声明，即`var a` 和`a = 1`，他们分别在编译阶段和执行阶段处理。
-
-## 五、跨越词法作用域的两种机制
-
-虽然JavaScript采用的是词法作用域，但是如果真的想要在代码执行的时候修改作用域的话也是有办法的，因为js中存在两个”bug”来做到这点。这两个”bug”是传说中的`eval`还有之前提到过的`with`。由于这两个”bug”，js的作用域应该算是不完全的词法作用域。
-
-### eval
-
-eval可能是js中最强大的函数了，它接受一个参数即一个字符串，在执行时会把这个字符串作为实际的ECMA语句插入到原位置进行解析执行，正如下面例子所示。
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(str)&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-built_in&quot;&gt;eval&lt;/span&gt;(str);
-    console.log(a);
-}
-a = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;;
-&lt;span class=&quot;hljs-comment&quot;&gt;//修改了foo函数体内的词法作用域&lt;/span&gt;
-foo(&lt;span class=&quot;hljs-string&quot;&gt;&apos;var a = 2;&apos;&lt;/span&gt;);&lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;`&lt;/pre&gt;
-
-因为在js编译器预编译的时候，eval()中的语句并不会被执行，所以，eval()中的变量或者函数不会被提升。
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`foo();&lt;span class=&quot;hljs-comment&quot;&gt;//抛出ReferenceError错误&lt;/span&gt;
-&lt;span class=&quot;hljs-built_in&quot;&gt;eval&lt;/span&gt;(&lt;span class=&quot;hljs-string&quot;&gt;&quot;function foo(){console.log(&apos;1&apos;);}&quot;&lt;/span&gt;);`&lt;/pre&gt;
-
-当然，如果变量/函数的定义和使用都在eval中，那么里面的变量对于里面的调用来说是有提升的，比如:
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-built_in&quot;&gt;eval&lt;/span&gt;(&lt;span class=&quot;hljs-string&quot;&gt;&quot;foo();function foo(){console.log(&apos;1&apos;);}&quot;&lt;/span&gt;);&lt;span class=&quot;hljs-comment&quot;&gt;//1&lt;/span&gt;`&lt;/pre&gt;
-
-JavaScript中还有一些类似`eval()`处理方式的函数，比如`new Function(..)`，`setInterval(..)`和`setTimeout(..)`等等。
-
-### with
-
-with语句同样可以在执行阶段修改作用域。 
-
-如
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; obj = {
-    a: &lt;span class=&quot;hljs-string&quot;&gt;&apos;a&apos;&lt;/span&gt;,
-    b: &lt;span class=&quot;hljs-string&quot;&gt;&apos;b&apos;&lt;/span&gt;,
-    c: &lt;span class=&quot;hljs-string&quot;&gt;&apos;c&apos;&lt;/span&gt;
-};
-&lt;span class=&quot;hljs-keyword&quot;&gt;with&lt;/span&gt; (obj){
-    console.log(a+b+c);&lt;span class=&quot;hljs-comment&quot;&gt;//abc&lt;/span&gt;
-}`&lt;/pre&gt;
-
-在with语句的代码块里面，a,b,c来自obj的三个属性，这个在js预编译的时候也是不能判断的，因此with语句中的变量也不能在词法阶段确定。
-
-## 六、闭包与模块机制
-
-### 闭包
-
-说起闭包，在我刚接触JavaScript的时候听到这个词的时候感觉它特别神秘——从这个奇怪的名字就感觉到了神秘感。直到深入了解后才发现，闭包，原来是这样。
-
-#### 什么是闭包
-
-当一个函数能够保存自己所在的词法作用域的时，便产生了闭包——无论这个是在当前词法作用域中还是当前词法作用域外。
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;;
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-        console.log(a);
-    }
-    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; bar;
-}
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; baz = foo();
-baz();&lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;`&lt;/pre&gt;
-
-在上面的例子中，在调用foo函数时bar函数保存着foo函数的局部变量a，在bar函数被返回到foo函数外面的时候，便产生了闭包，闭包里保存着bar所在的词法作用域（包含bar函数和foo函数的所有变量以及全局对象的所有属性），故调用baz函数的时候能够正常返回a中的值2。
-
-#### 闭包相关的问题
-
-##### 问题
-
-首先看下面的例子:
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt;(&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;; i &amp;lt;= &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;; i++){
-    setTimeout(&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-        console.log(i);
-    },&lt;span class=&quot;hljs-number&quot;&gt;1000&lt;/span&gt;);
-}`&lt;/pre&gt;
-
-这个例子中可以看出这段代码预期是按顺序分别输出1～5的数字。而实际上，每次都输出6。
-
-现仔细造成这个”出乎意料“的现象的原因：setTimeout函数中传进来的timer函数由于作用域闭包的原因，保存着对**同一个**变量 i 的引用，而在循环结束后i的值为6，又由于js的异步性，在过1000ms之后，循环已经处理结束，因此，结果会输出5个6。
-
-##### 解决办法
-
-只需对上面代码进行一些改进即可解决，代码如下：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;; i &amp;lt;= &lt;span class=&quot;hljs-number&quot;&gt;5&lt;/span&gt;; i++){
-    (&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(i)&lt;/span&gt;{&lt;/span&gt;
-        setTimeout(&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;timer&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-            console.log(i);
-        },&lt;span class=&quot;hljs-number&quot;&gt;1000&lt;/span&gt;);
-    })(i)
-}`&lt;/pre&gt;
-
-上面代码通过创建一个自执行的函数表达式来得到一个独立的作用域，再把外部的i作为参数传进函数体，因为函数的参数传递会创建一个副本，所以每个timer中保存不同的i的副本，问题就得到解决了。
-
-### 模块机制
-
-JavaScript中的模块模式正是充分利用了作用域闭包的能力而实现的。下面由简入深地描述js中的模块机制。
-
-#### 简单的模块
-
-有了闭包的知识的话，下面的模块代码相信能很快看懂。
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;myModule&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; message = &lt;span class=&quot;hljs-string&quot;&gt;&quot;hello,Ontides&quot;&lt;/span&gt;;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; resp = &lt;span class=&quot;hljs-string&quot;&gt;&quot;Hi,&quot;&lt;/span&gt;;
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-        console.log(message);
-    }
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;getResponse&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name)&lt;/span&gt;{&lt;/span&gt;
-        console.log(resp+name);
-    }
-    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; {
-        sayHello: sayHello,
-        getResponse: getResponse
-    };
-}
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; foo = myModule();
-
-foo.sayHello(); &lt;span class=&quot;hljs-comment&quot;&gt;//Hello,Ontides&lt;/span&gt;
-foo.getResponse(&lt;span class=&quot;hljs-string&quot;&gt;&quot;Scott&quot;&lt;/span&gt;);   &lt;span class=&quot;hljs-comment&quot;&gt;//Hi,Scott&lt;/span&gt;`&lt;/pre&gt;
-
-#### 单例模式
-
-将上面代码改变一下，可以实现单例模式：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; foo = (&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;myModule&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; message = &lt;span class=&quot;hljs-string&quot;&gt;&quot;hello,Ontides&quot;&lt;/span&gt;;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; resp = &lt;span class=&quot;hljs-string&quot;&gt;&quot;Hi,&quot;&lt;/span&gt;;
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-        console.log(message);
-    }
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;getResponse&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name)&lt;/span&gt;{&lt;/span&gt;
-        console.log(resp+name);
-    }
-    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; {
-        sayHello: sayHello,
-        getResponse: getResponse
-    };
-})();
-foo.sayHello(); &lt;span class=&quot;hljs-comment&quot;&gt;//Hello,Ontides&lt;/span&gt;
-foo.getResponse(&lt;span class=&quot;hljs-string&quot;&gt;&quot;Scott&quot;&lt;/span&gt;);   &lt;span class=&quot;hljs-comment&quot;&gt;//Hi,Scott&lt;/span&gt;`&lt;/pre&gt;
-
-#### 现代模块
-
-现在实现的模块通常需要一个模块管理器，其一般实现如下：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; myModules = (&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;Manager&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; modules = {};
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;define&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name, deps, impl)&lt;/span&gt;{&lt;/span&gt;
-        &lt;span class=&quot;hljs-keyword&quot;&gt;for&lt;/span&gt; (&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; i = &lt;span class=&quot;hljs-number&quot;&gt;0&lt;/span&gt;; i &amp;lt; deps.length; i++){
-            deps[i] = modules[deps[i]]; &lt;span class=&quot;hljs-comment&quot;&gt;//获取模块依赖&lt;/span&gt;
-        }
-        modules[name] = impl.apply(impl, deps);&lt;span class=&quot;hljs-comment&quot;&gt;//将依赖注入到定义的模块中&lt;/span&gt;
-    }
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name)&lt;/span&gt;{&lt;/span&gt;
-        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; modules[name];
-    }
-    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; {
-        define: define,
-        get: get
-    }
-})();`&lt;/pre&gt;
-
-这个模块管理器的实现中，`deps[i] = modules[deps[i]];`语句根据目标定义模块所需要的依赖从modules中查询，而`modules[name] = impl.apply(impl, deps);`语句则将目标依赖注入到定义模块中。
-
-通过上面的模块管理器，可以轻松创建模块，管理模块之间的依赖。
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`myModules.define(&lt;span class=&quot;hljs-string&quot;&gt;&quot;bar&quot;&lt;/span&gt;,[],&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;sayHello&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(name)&lt;/span&gt;{&lt;/span&gt;
-        &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;hljs-string&quot;&gt;&quot;Hello,&quot;&lt;/span&gt;+name;
-    }
-    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt;{
-        sayHello: sayHello
-    }
-});
-
-myModules.define(&lt;span class=&quot;hljs-string&quot;&gt;&quot;foo&quot;&lt;/span&gt;,[&lt;span class=&quot;hljs-string&quot;&gt;&quot;bar&quot;&lt;/span&gt;],&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;(bar)&lt;/span&gt;{&lt;/span&gt;
-    &lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; person = &lt;span class=&quot;hljs-string&quot;&gt;&quot;Ontides&quot;&lt;/span&gt;;
-    &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;awsome&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-        console.log(bar.sayHello(person).toUpperCase());
-    }
-    &lt;span class=&quot;hljs-keyword&quot;&gt;return&lt;/span&gt;{
-        awsome: awsome
-    }
-});
-
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; bar = myModules.get(&lt;span class=&quot;hljs-string&quot;&gt;&quot;bar&quot;&lt;/span&gt;);
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; foo = myModules.get(&lt;span class=&quot;hljs-string&quot;&gt;&quot;foo&quot;&lt;/span&gt;);
-
-console.log(bar.sayHello(&lt;span class=&quot;hljs-string&quot;&gt;&quot;Ontides&quot;&lt;/span&gt;));&lt;span class=&quot;hljs-comment&quot;&gt;//Hello,Ontides&lt;/span&gt;
-foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span&gt;
-
-        &lt;div&gt;
-            作者：ontides 发表于2016/10/5 10:36:19 [原文链接](http://blog.csdn.net/ontides/article/details/52737669)
-        &lt;/div&gt;
-        &lt;div&gt;
-        阅读：632 评论：0 [查看评论](http://blog.csdn.net/ontides/article/details/52737669#comments)
-        &lt;/div&gt;
-</code></pre>]]></content>
+<p>还是举两个例子吧：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这是词法作用域</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(a);    <span class="comment">//2</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> a = <span class="number">3</span>;</div><div class="line">    foo();</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line">bar();</div></pre></td></tr></table></figure></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//这是动态作用域</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(a);     <span class="comment">//3</span></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> a = <span class="number">3</span>;</div><div class="line">    foo();</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line">bar();</div></pre></td></tr></table></figure>
+<p>##二、作用域与标识符查询<br>作用域和表示符查询紧密相关，表示符正是依靠这样一套严密的作用域规则而得以有条理地查询。而对于作用域，需要理解几个词：执行环境，变量对象，活动对象，作用域链。</p>
+<p>###执行环境与作用域链<br>首先解释执行环境吧，执行环境定义了在这个执行环境中变量或者函数有权访问的数据，决定了它们各自的行为。在js中执行环境的结构由全局执行环境和一级级内部嵌套的子执行环境组成。其中全局执行环境由ECMAScript实现所在的宿主环境决定，在浏览器中为window对象，在Node中是global对象。每个函数都包含着自己的执行环境，一个个执行环境组成了一个执行环境栈，当执行流进入一个函数时，该函数的执行环境会被推入环境栈中，函数执行之后该环境又会被从环境栈中弹出，这便是ECMAScript执行流的机制。</p>
+<p>每个执行环境都包含一个变量对象，它保存着环境中定义的所有变量和函数。当一个执行环境的代码执行的时候会为它的变量对象创建一个由当前执行环境沿着环境栈到全局执行环境的作用域链，作用域链保证了对当前执行环境有权访问的所有变量和函数的 <strong>有序</strong> 访问。如果当前执行环境是一个函数，那么该函数的活动对象就会成为这个执行环境的变量对象。</p>
+<p>而对除了全局执行环境外的执行对象，活动对象最前端是arguments对象，而作用域链沿着一层层的被包含环境的变量对象沿伸到全局执行环境的变量对象。</p>
+<p>###标识符查询<br>了解了执行环境和作用域链，标识符的查询就很好理解了，js引擎在遇到一个标识符的时候根据作用域链沿着变量对象从前端到后端进行查询（其实就是从子作用域逐层向父作用域查询），一旦遇到匹配的标识符便会<strong>立即停止</strong>。如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> a = <span class="number">1</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line">        <span class="built_in">console</span>.log(a);</div><div class="line">    &#125;</div><div class="line">    a = <span class="number">3</span>;</div><div class="line">    bar();</div><div class="line">&#125;</div><div class="line">foo();  <span class="comment">//2</span></div></pre></td></tr></table></figure></p>
+<p>该例中在console.log对a进行RHS查询时，在bar函数的作用域内便查询到了标识符a，因此便立即停止标识符查询，所以访问不到foo函数的标识符a。这种现象是标识符的遮蔽效应，在多层的嵌套作用域内可以定义同名的标识符，遮蔽效应使得内部的标识符可以遮蔽外层表示符。</p>
+<p>##三、可以形成独立作用域的结构<br>在JavaScript中，可以形成独立作用域的结构有两类，函数作用域和块作用域。先说说函数作用域吧。</p>
+<p>###函数作用域<br>函数作用域是js中最常见的作用域，每一个函数都拥有一个作用域，而属于这个函数的变量都能在整个函数的范围内访问（当然也能访问），但是在函数外则无法访问函数内的任何变量——除非你在函数执行时把一个闭包返回到函数体外。这种函数内部变量对外的隐藏作用使得同级作用域同名标识符之间的冲突得到避免，这样，也促成了模块机制的良好运行。</p>
+<p>####利用函数内部对外部的隐藏<br>如果想创建一个封闭的作用域，让这个作用域内的变量不被外部访问，利用<strong>立即执行函数表达式</strong>（IIFE）便可实现。如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</div><div class="line">(<span class="function"><span class="keyword">function</span> <span class="title">IIFE</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line">    <span class="built_in">console</span>.log(a); <span class="comment">//2</span></div><div class="line">&#125;)();   <span class="comment">//立即执行</span></div><div class="line"><span class="built_in">console</span>.log(a);     <span class="comment">//1</span></div></pre></td></tr></table></figure></p>
+<p>这个函数表达式在声明后立即执行，这样函数体内的语句都得到了执行且对外部的变量没有影响。其实，JS中的模块也利用了这点。JS模块还是放到最后说吧。</p>
+<p>####匿名函数<br>JavaScript中的函数表达式存在具名函数表达式和匿名函数表达式两种，而函数声明则必须具名。匿名函数有什么用呢？让我们不用去冥思苦想标识符怎么取。如上面的例子中的IIFE函数，该函数即使去掉函数名，程序也可以正常运行，因为它的函数名在这种情况起到作用不大。</p>
+<p>虽然匿名函数写起来十分便捷，但是基于以下原因，始终给每个函数命名是值得推荐的。</p>
+<ol>
+<li>在没有函数名的情况下，函数的递归调用等需要引用自身的时候，将会不得不用<code>arguments.callee</code>进行引用，而这在ES5之后便不被推荐使用了——甚至在严格模式下会抛出TypeError错误。</li>
+<li>函数名的省略使得代码可读性下降</li>
+</ol>
+<p>说到了匿名函数，不得不提闭包，由于闭包内容较多，将在后面专门说明。</p>
+<p>###块作用域<br>除了最常见的函数作用域，JavaScript中的块作用域也可以创建出一个独立的作用域。可是，在 Nicholas C.Zakas 著的《Professional JavaScript for Web Developers(3rd Edition)》中说道：</p>
+<blockquote>
+<p>####No Block-Level Scopes<br>JavaScript’s lack of block-level scopes is a common source of confusion. In other C-like languages, code blocks enclosed by brackets have their own scope (more accurately described as their own execution context in ECMAScript), allowing conditional definition of variables. </p>
+</blockquote>
+<p>Nicholas 之所以说JavaScript没有块级作用域是因为他没把<code>with</code>和<code>try/catch</code>作为块级作用域看待，他在书中把这两个情况作为延长作用域链的手段。实际上，通过<code>with</code>和<code>try/catch</code>创建的独立作用域也算是块级作用域的形式，除了这两种外还可以利用ES6中的<code>let</code>和<code>const</code>也可以形成块级作用域。</p>
+<p>####with<br>通过with可以创建出的作用域仅在with声明中使用。如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> location = &#123;</div><div class="line">    <span class="attr">say</span>: <span class="string">'hello world'</span></div><div class="line">&#125;;</div><div class="line"><span class="keyword">with</span> (location)&#123;</div><div class="line">    <span class="built_in">console</span>.log(say);<span class="comment">//hello world</span></div><div class="line">&#125;</div><div class="line"><span class="built_in">console</span>.log(say);<span class="comment">//抛出ReferenceError错误</span></div></pre></td></tr></table></figure></p>
+<p>####try/catch<br><code>try/catch</code>的catch分句会创建一个块级作用域，其中声明的变量只能在内部使用。如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span>&#123;</div><div class="line">    <span class="keyword">throw</span> &#123;</div><div class="line">        <span class="attr">say</span>: <span class="string">'hello world'</span></div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">catch</span>(error)&#123;</div><div class="line">    <span class="built_in">console</span>.log(error.say);<span class="comment">//hello world</span></div><div class="line">&#125;</div><div class="line"><span class="built_in">console</span>.log(error.say);<span class="comment">////抛出ReferenceError错误</span></div></pre></td></tr></table></figure></p>
+<p>####let/const<br>ES6中引入的let和const关键字可以将变量绑定到任意由{}包含的代码块中。<br>以下例子可以看出用let声明变量和用var声明变量的区别：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//变量用var声明</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="number">5</span>; i++)&#123;</div><div class="line">    <span class="built_in">console</span>.log(i);</div><div class="line">&#125;</div><div class="line"><span class="built_in">console</span>.log(i);<span class="comment">//5</span></div><div class="line"></div><div class="line"><span class="comment">//变量用let声明</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">let</span> j = <span class="number">1</span>; j &lt; <span class="number">5</span>; j++)&#123;</div><div class="line">    <span class="built_in">console</span>.log(j);</div><div class="line">&#125;</div><div class="line"><span class="built_in">console</span>.log(j);<span class="comment">//抛出ReferenceError错误</span></div></pre></td></tr></table></figure></p>
+<p>当然，也可以直接绑定在块中，如：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="keyword">let</span> a = <span class="number">10</span>;</div><div class="line">    <span class="built_in">console</span>.log(a);<span class="comment">//10</span></div><div class="line">&#125;</div><div class="line"><span class="built_in">console</span>.log(a);抛出<span class="built_in">ReferenceError</span>错误</div></pre></td></tr></table></figure></p>
+<p>const关键字定义的常量和let一样，能将其定义的常量绑定到{}包含的块级作用域中，就再举例子了。</p>
+<p>##四、提升<br>提升的概念比较简单，但是如果对js语言只是浅尝辄止的话，可能会理解不清。这里通过提升的表现，优先级和原因来简单说明js中的提升。</p>
+<p>###提升的表现<br>提升是变量或函数在同个作用域内表现出的可以先使用后定义的现象。先来看看变量提升：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">"use strict"</span>;<span class="comment">//开启ES5的严格模式</span></div><div class="line">a = <span class="number">2</span>;</div><div class="line"><span class="keyword">var</span> a;</div><div class="line"><span class="built_in">console</span>.log(a);<span class="comment">//2</span></div></pre></td></tr></table></figure></p>
+<p>再看看函数提升：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="meta">"use strict"</span>;</div><div class="line">foo(<span class="number">1</span>);<span class="comment">//2</span></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">n</span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(n+<span class="number">1</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>###提升的优先级<br>提升具有优先级，当一个作用域里对同个标识符既使用了变量声明，也使用了函数声明，那么函数声明会优先被提升。如下面的例子。<br><a tag="example"></a><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">foo();<span class="comment">//1</span></div><div class="line"><span class="keyword">var</span> foo;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="number">1</span>);</div><div class="line">&#125;</div><div class="line">foo = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="number">2</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>###提升的深层原因<br>提升之所以存在，是因为JavaScript引擎在对代码解释前会进行预编译。在编译阶段，有一部分的工作就是找到所有的函数声明，并用合适的作用域把它们关联起来，这也是词法作用域的核心部分。有了预编译，在解释执行时，不再检测变量的声明，引擎在对变量进行LHS或RHS查询时会直接向编译阶段生成的作用域取得数据。</p>
+<p>也就是说对于<code>var a = 1’;</code>这个语句来说，js引擎会识别为两个声明，即<code>var a</code> 和<code>a = 1</code>，他们分别在编译阶段和执行阶段处理。</p>
+<p>##五、跨越词法作用域的两种机制<br>虽然JavaScript采用的是词法作用域，但是如果真的想要在代码执行的时候修改作用域的话也是有办法的，因为js中存在两个”bug”来做到这点。这两个”bug”是传说中的<code>eval</code>还有之前提到过的<code>with</code>。由于这两个”bug”，js的作用域应该算是不完全的词法作用域。</p>
+<p>###eval<br>eval可能是js中最强大的函数了，它接受一个参数即一个字符串，在执行时会把这个字符串作为实际的ECMA语句插入到原位置进行解析执行，正如下面例子所示。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">str</span>)</span>&#123;</div><div class="line">    <span class="built_in">eval</span>(str);</div><div class="line">    <span class="built_in">console</span>.log(a);</div><div class="line">&#125;</div><div class="line">a = <span class="number">1</span>;</div><div class="line"><span class="comment">//修改了foo函数体内的词法作用域</span></div><div class="line">foo(<span class="string">'var a = 2;'</span>);<span class="comment">//2</span></div></pre></td></tr></table></figure></p>
+<p>因为在js编译器预编译的时候，eval()中的语句并不会被执行，所以，eval()中的变量或者函数不会被提升。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">foo();<span class="comment">//抛出ReferenceError错误</span></div><div class="line"><span class="built_in">eval</span>(<span class="string">"function foo()&#123;console.log('1');&#125;"</span>);</div></pre></td></tr></table></figure></p>
+<p>当然，如果变量/函数的定义和使用都在eval中，那么里面的变量对于里面的调用来说是有提升的，比如:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">eval</span>(<span class="string">"foo();function foo()&#123;console.log('1');&#125;"</span>);<span class="comment">//1</span></div></pre></td></tr></table></figure></p>
+<p>JavaScript中还有一些类似<code>eval()</code>处理方式的函数，比如<code>new Function(..)</code>，<code>setInterval(..)</code>和<code>setTimeout(..)</code>等等。</p>
+<p>###with<br>with语句同样可以在执行阶段修改作用域。<br>如<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="string">'a'</span>,</div><div class="line">    <span class="attr">b</span>: <span class="string">'b'</span>,</div><div class="line">    <span class="attr">c</span>: <span class="string">'c'</span></div><div class="line">&#125;;</div><div class="line"><span class="keyword">with</span> (obj)&#123;</div><div class="line">    <span class="built_in">console</span>.log(a+b+c);<span class="comment">//abc</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>在with语句的代码块里面，a,b,c来自obj的三个属性，这个在js预编译的时候也是不能判断的，因此with语句中的变量也不能在词法阶段确定。</p>
+<p>##六、闭包与模块机制</p>
+<p>###闭包<br>说起闭包，在我刚接触JavaScript的时候听到这个词的时候感觉它特别神秘——从这个奇怪的名字就感觉到了神秘感。直到深入了解后才发现，闭包，原来是这样。</p>
+<p>####什么是闭包<br>当一个函数能够保存自己所在的词法作用域的时，便产生了闭包——无论这个是在当前词法作用域中还是当前词法作用域外。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(a);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> bar;</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> baz = foo();</div><div class="line">baz();<span class="comment">//2</span></div></pre></td></tr></table></figure></p>
+<p>在上面的例子中，在调用foo函数时bar函数保存着foo函数的局部变量a，在bar函数被返回到foo函数外面的时候，便产生了闭包，闭包里保存着bar所在的词法作用域（包含bar函数和foo函数的所有变量以及全局对象的所有属性），故调用baz函数的时候能够正常返回a中的值2。</p>
+<p>####闭包相关的问题</p>
+<p>#####问题<br>首先看下面的例子:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++)&#123;</div><div class="line">    setTimeout(<span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(i);</div><div class="line">    &#125;,<span class="number">1000</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个例子中可以看出这段代码预期是按顺序分别输出1～5的数字。而实际上，每次都输出6。</p>
+<p>现仔细造成这个”出乎意料“的现象的原因：setTimeout函数中传进来的timer函数由于作用域闭包的原因，保存着对<strong>同一个</strong>变量 i 的引用，而在循环结束后i的值为6，又由于js的异步性，在过1000ms之后，循环已经处理结束，因此，结果会输出5个6。</p>
+<p>#####解决办法<br>只需对上面代码进行一些改进即可解决，代码如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt;= <span class="number">5</span>; i++)&#123;</div><div class="line">    (<span class="function"><span class="keyword">function</span>(<span class="params">i</span>)</span>&#123;</div><div class="line">        setTimeout(<span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="built_in">console</span>.log(i);</div><div class="line">        &#125;,<span class="number">1000</span>);</div><div class="line">    &#125;)(i)</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面代码通过创建一个自执行的函数表达式来得到一个独立的作用域，再把外部的i作为参数传进函数体，因为函数的参数传递会创建一个副本，所以每个timer中保存不同的i的副本，问题就得到解决了。</p>
+<p>###模块机制<br>JavaScript中的模块模式正是充分利用了作用域闭包的能力而实现的。下面由简入深地描述js中的模块机制。</p>
+<p>####简单的模块<br>有了闭包的知识的话，下面的模块代码相信能很快看懂。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">myModule</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> message = <span class="string">"hello,Ontides"</span>;</div><div class="line">    <span class="keyword">var</span> resp = <span class="string">"Hi,"</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">sayHello</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(message);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">getResponse</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(resp+name);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">sayHello</span>: sayHello,</div><div class="line">        <span class="attr">getResponse</span>: getResponse</div><div class="line">    &#125;;</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> foo = myModule();</div><div class="line"></div><div class="line">foo.sayHello(); <span class="comment">//Hello,Ontides</span></div><div class="line">foo.getResponse(<span class="string">"Scott"</span>);   <span class="comment">//Hi,Scott</span></div></pre></td></tr></table></figure></p>
+<p>####单例模式<br>将上面代码改变一下，可以实现单例模式：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> foo = (<span class="function"><span class="keyword">function</span> <span class="title">myModule</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> message = <span class="string">"hello,Ontides"</span>;</div><div class="line">    <span class="keyword">var</span> resp = <span class="string">"Hi,"</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">sayHello</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(message);</div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">getResponse</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(resp+name);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">sayHello</span>: sayHello,</div><div class="line">        <span class="attr">getResponse</span>: getResponse</div><div class="line">    &#125;;</div><div class="line">&#125;)();</div><div class="line">foo.sayHello(); <span class="comment">//Hello,Ontides</span></div><div class="line">foo.getResponse(<span class="string">"Scott"</span>);   <span class="comment">//Hi,Scott</span></div></pre></td></tr></table></figure></p>
+<p>####现代模块机制<br>现在实现的模块通常需要一个模块管理器，其一般实现如下：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myModules = (<span class="function"><span class="keyword">function</span> <span class="title">Manager</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> modules = &#123;&#125;;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">define</span>(<span class="params">name, deps, impl</span>)</span>&#123;</div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; deps.length; i++)&#123;</div><div class="line">            deps[i] = modules[deps[i]]; <span class="comment">//获取模块依赖</span></div><div class="line">        &#125;</div><div class="line">        modules[name] = impl.apply(impl, deps);<span class="comment">//将依赖注入到定义的模块中</span></div><div class="line">    &#125;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">get</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">        <span class="keyword">return</span> modules[name];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> &#123;</div><div class="line">        <span class="attr">define</span>: define,</div><div class="line">        <span class="attr">get</span>: get</div><div class="line">    &#125;</div><div class="line">&#125;)();</div></pre></td></tr></table></figure></p>
+<p>这个模块管理器的实现中，<code>deps[i] = modules[deps[i]];</code>语句根据目标定义模块所需要的依赖从modules中查询，而<code>modules[name] = impl.apply(impl, deps);</code>语句则将目标依赖注入到定义模块中。</p>
+<p>通过上面的模块管理器，可以轻松创建模块，管理模块之间的依赖。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">myModules.define(<span class="string">"bar"</span>,[],<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">sayHello</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="string">"Hello,"</span>+name;</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span>&#123;</div><div class="line">        <span class="attr">sayHello</span>: sayHello</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line">myModules.define(<span class="string">"foo"</span>,[<span class="string">"bar"</span>],<span class="function"><span class="keyword">function</span>(<span class="params">bar</span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> person = <span class="string">"Ontides"</span>;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">awsome</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(bar.sayHello(person).toUpperCase());</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span>&#123;</div><div class="line">        <span class="attr">awsome</span>: awsome</div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"></div><div class="line"><span class="keyword">var</span> bar = myModules.get(<span class="string">"bar"</span>);</div><div class="line"><span class="keyword">var</span> foo = myModules.get(<span class="string">"foo"</span>);</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(bar.sayHello(<span class="string">"Ontides"</span>));<span class="comment">//Hello,Ontides</span></div><div class="line">foo.awsome();<span class="comment">//HELLO,ONTIDES</span></div></pre></td></tr></table></figure></p>
+]]></content>
     
     <summary type="html">
     
@@ -997,21 +562,16 @@ foo.awsome();&lt;span class=&quot;hljs-comment&quot;&gt;//HELLO,ONTIDES&lt;/span
     <link href="https://ontides.github.io/2016/10/03/JavaScript%E4%B8%AD%E7%9A%84LHS%E6%9F%A5%E8%AF%A2%E5%92%8CRHS%E6%9F%A5%E8%AF%A2/"/>
     <id>https://ontides.github.io/2016/10/03/JavaScript中的LHS查询和RHS查询/</id>
     <published>2016-10-03T02:22:13.000Z</published>
-    <updated>2017-02-16T07:08:25.000Z</updated>
+    <updated>2017-02-19T06:28:59.000Z</updated>
     
     <content type="html"><![CDATA[<p>JavaScript中在预编译后执行代码时对变量的查询分为LHS（Left-Hand-Side）查询和RHS(Right-Hand-Side)查询。</p>
 <hr>
 <h3 id="一、LHS和RHS有什么区别？"><a href="#一、LHS和RHS有什么区别？" class="headerlink" title="一、LHS和RHS有什么区别？"></a>一、LHS和RHS有什么区别？</h3><p>这里的L和R是指赋值时候“=” 的左侧还是右侧，也就是说一个是做被赋值，一个是取值。 </p>
 <p>正如下面这个例子，对变量a的引用是一个LHS引用，而对值2的引用是RHS引用</p>
-<pre><code>&lt;span class=&quot;hljs-attribute&quot;&gt;var a &lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt; 2&lt;/span&gt;`&lt;/pre&gt;
-
-当然，在js中赋值操作不仅仅限于“=”这种显式赋值。还有一些隐式的赋值，比如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; foo(a){
-    &lt;span class=&quot;hljs-keyword&quot;&gt;...&lt;/span&gt;
-}
-foo(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
-</code></pre><p>这个例子中，执行函数foo的时候对foo进行了RHS引用，而对foo函数进行调用的时候隐藏着一个将2赋值给形式参数a的过程，即<code>a=2</code>，这里有对a的LHS引用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var a = 2;</div></pre></td></tr></table></figure>
+<p>当然，在js中赋值操作不仅仅限于“=”这种显式赋值。还有一些隐式的赋值，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">function foo(a)&#123;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line">foo(2);</div></pre></td></tr></table></figure>
+<p>这个例子中，执行函数foo的时候对foo进行了RHS引用，而对foo函数进行调用的时候隐藏着一个将2赋值给形式参数a的过程，即<code>a=2</code>，这里有对a的LHS引用。</p>
 <h3 id="二、为什么要区分LHS引用和RHS引用？"><a href="#二、为什么要区分LHS引用和RHS引用？" class="headerlink" title="二、为什么要区分LHS引用和RHS引用？"></a>二、为什么要区分LHS引用和RHS引用？</h3><p>这两种不同的引用方式的在对没有声明的变量的处理上是不同的。而这个不同之处对于我们编写代码和分析JS引擎报的错误是很有用处的。</p>
 <ul>
 <li><p>当对一个变量执行RHS查询时，如果遍历该变量所在处的词法作用域未能找到这个变量，JS引擎就会抛出 ReferenceError 错误如果成功查询到了这个变量，但是对这个变量执行不合理操作，比如对一个非数组的变量执行下标取值，JS引擎就会抛出 TypeError 错误。</p>
@@ -1020,13 +580,7 @@ foo(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
 </li>
 </ul>
 <p>因此，对LHS查询和RHS查询的仔细区分和理解无论是对JS执行过程本身的理解还是分析错误都是有所好处的。</p>
-<pre><code>&lt;div&gt;
-    作者：ontides 发表于2016/10/3 10:22:13 [原文链接](http://blog.csdn.net/ontides/article/details/52727180)
-&lt;/div&gt;
-&lt;div&gt;
-阅读：147 评论：0 [查看评论](http://blog.csdn.net/ontides/article/details/52727180#comments)
-&lt;/div&gt;
-</code></pre>]]></content>
+]]></content>
     
     <summary type="html">
     

@@ -21,7 +21,7 @@
 <meta property="og:url" content="https://ontides.github.io/2016/10/03/JavaScript中的LHS查询和RHS查询/index.html">
 <meta property="og:site_name" content="Ontides's Blog">
 <meta property="og:description" content="JavaScript中在预编译后执行代码时对变量的查询分为LHS（Left-Hand-Side）查询和RHS(Right-Hand-Side)查询。">
-<meta property="og:updated_time" content="2017-02-16T07:08:25.000Z">
+<meta property="og:updated_time" content="2017-02-19T06:28:59.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaScript中的LHS查询和RHS查询">
 <meta name="twitter:description" content="JavaScript中在预编译后执行代码时对变量的查询分为LHS（Left-Hand-Side）查询和RHS(Right-Hand-Side)查询。">
@@ -297,15 +297,10 @@
 <hr>
 <h3 id="一、LHS和RHS有什么区别？"><a href="#一、LHS和RHS有什么区别？" class="headerlink" title="一、LHS和RHS有什么区别？"></a>一、LHS和RHS有什么区别？</h3><p>这里的L和R是指赋值时候“=” 的左侧还是右侧，也就是说一个是做被赋值，一个是取值。 </p>
 <p>正如下面这个例子，对变量a的引用是一个LHS引用，而对值2的引用是RHS引用</p>
-<pre><code>&lt;span class=&quot;hljs-attribute&quot;&gt;var a &lt;/span&gt;=&lt;span class=&quot;hljs-string&quot;&gt; 2&lt;/span&gt;`&lt;/pre&gt;
-
-当然，在js中赋值操作不仅仅限于“=”这种显式赋值。还有一些隐式的赋值，比如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; foo(a){
-    &lt;span class=&quot;hljs-keyword&quot;&gt;...&lt;/span&gt;
-}
-foo(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
-</code></pre><p>这个例子中，执行函数foo的时候对foo进行了RHS引用，而对foo函数进行调用的时候隐藏着一个将2赋值给形式参数a的过程，即<code>a=2</code>，这里有对a的LHS引用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var a = 2;</div></pre></td></tr></table></figure>
+<p>当然，在js中赋值操作不仅仅限于“=”这种显式赋值。还有一些隐式的赋值，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">function foo(a)&#123;</div><div class="line">    ...</div><div class="line">&#125;</div><div class="line">foo(2);</div></pre></td></tr></table></figure>
+<p>这个例子中，执行函数foo的时候对foo进行了RHS引用，而对foo函数进行调用的时候隐藏着一个将2赋值给形式参数a的过程，即<code>a=2</code>，这里有对a的LHS引用。</p>
 <h3 id="二、为什么要区分LHS引用和RHS引用？"><a href="#二、为什么要区分LHS引用和RHS引用？" class="headerlink" title="二、为什么要区分LHS引用和RHS引用？"></a>二、为什么要区分LHS引用和RHS引用？</h3><p>这两种不同的引用方式的在对没有声明的变量的处理上是不同的。而这个不同之处对于我们编写代码和分析JS引擎报的错误是很有用处的。</p>
 <ul>
 <li><p>当对一个变量执行RHS查询时，如果遍历该变量所在处的词法作用域未能找到这个变量，JS引擎就会抛出 ReferenceError 错误如果成功查询到了这个变量，但是对这个变量执行不合理操作，比如对一个非数组的变量执行下标取值，JS引擎就会抛出 TypeError 错误。</p>
@@ -314,13 +309,7 @@ foo(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
 </li>
 </ul>
 <p>因此，对LHS查询和RHS查询的仔细区分和理解无论是对JS执行过程本身的理解还是分析错误都是有所好处的。</p>
-<pre><code>&lt;div&gt;
-    作者：ontides 发表于2016/10/3 10:22:13 [原文链接](http://blog.csdn.net/ontides/article/details/52727180)
-&lt;/div&gt;
-&lt;div&gt;
-阅读：147 评论：0 [查看评论](http://blog.csdn.net/ontides/article/details/52727180#comments)
-&lt;/div&gt;
-</code></pre>
+
       
     </div>
     
@@ -331,7 +320,7 @@ foo(&lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;);
         <p><span>本文标题:</span><a href="/2016/10/03/JavaScript中的LHS查询和RHS查询/">JavaScript中的LHS查询和RHS查询</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
         <p><span>发布时间:</span>2016-10-03, 10:22:13</p>
-        <p><span>最后更新:</span>2017-02-16, 15:08:25</p>
+        <p><span>最后更新:</span>2017-02-19, 14:28:59</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/10/03/JavaScript中的LHS查询和RHS查询/" title="JavaScript中的LHS查询和RHS查询">https://ontides.github.io/2016/10/03/JavaScript中的LHS查询和RHS查询/</a>
             <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/10/03/JavaScript中的LHS查询和RHS查询/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>

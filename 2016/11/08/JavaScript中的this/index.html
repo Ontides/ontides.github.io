@@ -21,7 +21,7 @@
 <meta property="og:url" content="https://ontides.github.io/2016/11/08/JavaScript中的this/index.html">
 <meta property="og:site_name" content="Ontides's Blog">
 <meta property="og:description" content="学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。">
-<meta property="og:updated_time" content="2017-02-16T05:43:36.000Z">
+<meta property="og:updated_time" content="2017-02-19T06:30:50.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaScript中的this">
 <meta name="twitter:description" content="学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。">
@@ -295,151 +295,56 @@
           
         <p>学习JavaScript的时候，this曾让我困惑不已，因为不清楚this所指向的是什么，在阅读一些代码的时候总是迷迷糊糊，不知所云。弄懂this后，看JavaScript代码的时候比原来更清晰，对语言本身也有了更深的理解。在JavaScript中，this非常重要但又特别容易弄错，所以我在此总结一下this的点点滴滴，希望能给那些对this还不明白的朋友们一点帮助吧。</p>
 <hr>
+<p>[TOC]</p>
+<hr>
 <h2 id="一、this的起源"><a href="#一、this的起源" class="headerlink" title="一、this的起源"></a>一、this的起源</h2><p>了解<code>this</code>是怎么来的，对更好地理解<code>this</code>还是很重要的。</p>
 <p>当一个函数被调用的时候，也就是执行流进入一个函数的时候，会自动创建一个被称为执行上下文的记录（其实这个时候也就产生了作用域链），这个记录里包含了各种必要信息，比如函数的调用方式，函数的参数（也就是<code>arguments</code>）等，<code>this</code>就包含在这个信息里。</p>
 <h2 id="二、对this的误解"><a href="#二、对this的误解" class="headerlink" title="二、对this的误解"></a>二、对this的误解</h2><p>我刚接触this的时候，我简单地觉得this就是指向函数所在的对象。比如：</p>
-<pre><code>&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; myObj = {
-    message: &lt;span class=&quot;hljs-string&quot;&gt;&quot;Hi, Ontides!&quot;&lt;/span&gt;,
-    say: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;say&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-        console.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.message);
-    }
-};
-
-myObj.say();    &lt;span class=&quot;hljs-comment&quot;&gt;//Hi, Ontides!&lt;/span&gt;
-`&lt;/pre&gt;
-
-这里确实如所预想的那样，打印出了“Hi, Ontides”，但是，函数并不一定在一个对象中，如果是一个全局函数，那么它里面的this指向就不能简单地理解为“指向函数所在的对象”那么了。
-
-实际上，JavaScript中this的指向和this所在函数定义的位置没有任何关系（ES5及以前，因为ES6中的箭头函数不是这样，稍后会说）。我们之所以会认为this和函数所声明的地方有关，是因为在JavaScript中的作用域遵循词法作用域，因此，我们很容易使用词法作用域的分析方式去分析this的具体指向。实际上，**this的处理方式和动态作用域的处理方式相同**。this的指向取决于函数调用的位置，而不是函数定义的位置。
-
-## 三、this真正的指向
-
-上面提到，函数调用的位置决定了this绑定的对象。在JavaScript中，对应函数四种调用方式，this的绑定一共有四种方式，分别为隐式绑定，显式绑定、new绑定和默认绑定。
-
-### 1\. 隐式绑定
-
-当函数的调用位置具有上下文对象，或者说函数是在一个对象下调用的时候，this会被隐式绑定到这个上下文对象上。如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    console.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.a);
-}
-
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; obj = {
-    a: &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;,
-    foo: foo
-};
-
-&lt;span class=&quot;hljs-comment&quot;&gt;//这里this指向了obj&lt;/span&gt;
-obj.foo()   &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
-`&lt;/pre&gt;
-
-### 2\. 显式绑定
-
-当一个函数使用`call`或者`apply`的方式调用的时候，this会被显式地绑定到`call`或者`apply`所指定的对象。如：
-
-&lt;pre class=&quot;prettyprint&quot;&gt;`&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; a = &lt;span class=&quot;hljs-number&quot;&gt;3&lt;/span&gt;;
-
-&lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    console.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.a);
-}
-
-&lt;span class=&quot;hljs-keyword&quot;&gt;var&lt;/span&gt; obj = {
-    a: &lt;span class=&quot;hljs-number&quot;&gt;2&lt;/span&gt;
-};
-
-foo.call(obj);  &lt;span class=&quot;hljs-comment&quot;&gt;//2&lt;/span&gt;
-`&lt;/pre&gt;
-
-这里因为函数foo再调用的时候使用`.call()`的方式调用，所以this指向了obj而不是默认的全局对象。
-
-### 3\. new绑定
-
-当对函数进行构造调用的时候（即使用new操作符进行调用），this的指向会发生改变。为了更好阐述new绑定，这里先阐述一下对函数构造调用的的过程。
-
-当对一个函数尽兴构造调用的时候，会经历以下步骤：
-</code></pre><ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> myObj = &#123;</div><div class="line">    <span class="attr">message</span>: <span class="string">"Hi, Ontides!"</span>,</div><div class="line">    <span class="attr">say</span>: <span class="function"><span class="keyword">function</span> <span class="title">say</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.message);</div><div class="line">    &#125;</div><div class="line">&#125;;</div><div class="line">myObj.say();    <span class="comment">//Hi, Ontides!</span></div></pre></td></tr></table></figure>
+<p>这里确实如所预想的那样，打印出了“Hi, Ontides”，但是，函数并不一定在一个对象中，如果是一个全局函数，那么它里面的this指向就不能简单地理解为“指向函数所在的对象”那么了。</p>
+<p>实际上，JavaScript中this的指向和this所在函数定义的位置没有任何关系（ES5及以前，因为ES6中的箭头函数不是这样，稍后会说）。我们之所以会认为this和函数所声明的地方有关，是因为在JavaScript中的作用域遵循词法作用域，因此，我们很容易使用词法作用域的分析方式去分析this的具体指向。实际上，<strong>this的处理方式和动态作用域的处理方式相同</strong>。this的指向取决于函数调用的位置，而不是函数定义的位置。</p>
+<p>##三、this真正的指向</p>
+<p>上面提到，函数调用的位置决定了this绑定的对象。在JavaScript中，对应函数四种调用方式，this的绑定一共有四种方式，分别为隐式绑定，显式绑定、new绑定和默认绑定。</p>
+<h3 id="1-隐式绑定"><a href="#1-隐式绑定" class="headerlink" title="1. 隐式绑定"></a>1. 隐式绑定</h3><p>当函数的调用位置具有上下文对象，或者说函数是在一个对象下调用的时候，this会被隐式绑定到这个上下文对象上。如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">foo</span>: foo</div><div class="line">&#125;;</div><div class="line"><span class="comment">//这里this指向了obj</span></div><div class="line">obj.foo()   <span class="comment">//2</span></div></pre></td></tr></table></figure>
+<h3 id="2-显式绑定"><a href="#2-显式绑定" class="headerlink" title="2. 显式绑定"></a>2. 显式绑定</h3><p>当一个函数使用<code>call</code>或者<code>apply</code>的方式调用的时候，this会被显式地绑定到<code>call</code>或者<code>apply</code>所指定的对象。如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">3</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span></div><div class="line">&#125;;</div><div class="line">foo.call(obj);  <span class="comment">//2</span></div></pre></td></tr></table></figure>
+<p>这里因为函数foo再调用的时候使用<code>.call()</code>的方式调用，所以this指向了obj而不是默认的全局对象。</p>
+<h3 id="3-new绑定"><a href="#3-new绑定" class="headerlink" title="3. new绑定"></a>3. new绑定</h3><p>当对函数进行构造调用的时候（即使用new操作符进行调用），this的指向会发生改变。为了更好阐述new绑定，这里先阐述一下对函数构造调用的的过程。</p>
+<p>当对一个函数尽兴构造调用的时候，会经历以下步骤：</p>
+<ol>
 <li>创建一个新的对象</li>
 <li>将构造函数的作用域赋给新的对象</li>
 <li>执行构造函数中的代码</li>
-<li><p>返回新对象</p>
+<li>返回新对象</li>
+</ol>
 <p>在步骤2中this被绑定到了这个新对象。</p>
 <h3 id="4-默认绑定"><a href="#4-默认绑定" class="headerlink" title="4. 默认绑定"></a>4. 默认绑定</h3><p>当前几种绑定都不适用的情况下JavaScript引擎会对this执行默认绑定。这里的函数调用方式是独立函数调用，如：</p>
-<pre class="prettyprint">`<span class="hljs-keyword">var</span> a = <span class="hljs-number">1</span>;
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
-    console.log(<span class="hljs-keyword">this</span>.name);
-}
-foo();  <span class="hljs-comment">//1</span>
-`</pre>
-
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</div><div class="line">&#125;</div><div class="line">foo();  <span class="comment">//1</span></div></pre></td></tr></table></figure>
 <p>在默认绑定的情况下this被绑定到了全局对象，因为全局变量a是全局对象的一个属性，因此这里输出了a中的内容。</p>
 <p>这里需要注意的是，再严格模式下，默认绑定将不会绑定到全局对象上，而会绑定到<code>undefined</code>，如：</p>
-<pre class="prettyprint">`<span class="hljs-pi">"use strict"</span>;
-<span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
-    console.log(<span class="hljs-keyword">this</span>.a);
-}
-foo(); <span class="hljs-comment">//TypeError: undefined is not an object</span>
-`</pre>
-
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="meta">"use strict"</span>;</div><div class="line"><span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line">foo(); <span class="comment">//TypeError: undefined is not an object</span></div></pre></td></tr></table></figure>
 <p>这里抛出了类型错误的提示，因为this被绑定到<code>undefined</code>，而<code>undefined</code>不是一个对象。</p>
 <h2 id="四、this绑定优先级"><a href="#四、this绑定优先级" class="headerlink" title="四、this绑定优先级"></a>四、this绑定优先级</h2><p>this绑定一共四条规则，那么在判断this绑定的时候应该怎样运用规则呢？通过this绑定的优先级来判断。</p>
 <p>优先级从高到低分别为 new绑定 &gt; 显式绑定 &gt; 隐式绑定 &gt; 默认绑定。</p>
 <h2 id="五、值得注意的几个点"><a href="#五、值得注意的几个点" class="headerlink" title="五、值得注意的几个点"></a>五、值得注意的几个点</h2><h3 id="1-小心隐性绑定"><a href="#1-小心隐性绑定" class="headerlink" title="1. 小心隐性绑定"></a>1. 小心隐性绑定</h3><p>有些情况一些函数看起来像是隐性绑定，而实际上是应用了默认绑定。如：</p>
-<pre class="prettyprint">`<span class="hljs-keyword">var</span> a = <span class="hljs-number">3</span>;
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
-    console.log(<span class="hljs-keyword">this</span>.a);
-}
-
-<span class="hljs-keyword">var</span> obj = {
-    a: <span class="hljs-number">2</span>,
-    foo: foo
-};
-
-<span class="hljs-keyword">var</span> bar = obj.foo;
-
-obj.foo();  <span class="hljs-comment">//2</span>
-bar();      <span class="hljs-comment">//3</span>`</pre>
-
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">3</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">foo</span>: foo</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> bar = obj.foo;</div><div class="line">obj.foo();  <span class="comment">//2</span></div><div class="line">bar();      <span class="comment">//3</span></div></pre></td></tr></table></figure>
 <p>这里虽然把<code>obj.foo</code>赋给了<code>bar</code>，但是实际上只是把对<code>foo</code>的引用赋给了<code>bar</code>，因此这里<code>bar</code>的调用只是普通的独立函数调用。</p>
 <p>还有一种更为常见而容易出错的情况发生在传入回调函数时：</p>
-<pre class="prettyprint">`<span class="hljs-keyword">var</span> a = <span class="hljs-number">3</span>;
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span><span class="hljs-params">()</span>{</span>
-    console.log(<span class="hljs-keyword">this</span>.a);
-}
-
-<span class="hljs-keyword">var</span> obj = {
-    a: <span class="hljs-number">2</span>,
-    foo: foo
-};
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">doFoo</span><span class="hljs-params">(fn)</span>{</span>
-    fn();
-}
-
-doFoo(obj.foo); <span class="hljs-comment">//3</span>`</pre>
-
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">3</span>;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">2</span>,</div><div class="line">    <span class="attr">foo</span>: foo</div><div class="line">&#125;;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">doFoo</span>(<span class="params">fn</span>)</span>&#123;</div><div class="line">    fn();</div><div class="line">&#125;</div><div class="line">doFoo(obj.foo); <span class="comment">//3</span></div></pre></td></tr></table></figure>
 <p>同样，如果理解函数名是对函数的引用的话，这个结果就容易理解了呃。传递到doFoo的参数是函数foo，函数的调用方式是独立调用，因此这里的this并不适用隐形绑定规则，而是采用默认绑定的规则。</p>
 <h3 id="2-箭头函数"><a href="#2-箭头函数" class="headerlink" title="2. 箭头函数"></a>2. 箭头函数</h3><p>ES6中的箭头函数不适用与上面四个规则。</p>
 <p>关于箭头有两点需要注意：</p>
-</li>
-<li><p>箭头函数中的this由函数所在的外部作用域来决定的<br>这里箭头函数中this遵循词法作用域的规则。如：<br><pre class="prettyprint">`<span class="hljs-keyword">var</span> a = <span class="hljs-number">2</span>;<br><span class="hljs-keyword">var</span> obj = {</p>
-<pre><code>a: &lt;span class=&quot;hljs-number&quot;&gt;1&lt;/span&gt;,
-foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;hljs-title&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;hljs-params&quot;&gt;()&lt;/span&gt;{&lt;/span&gt;
-    setTimeout(()=&amp;gt;{
-        console.log(&lt;span class=&quot;hljs-keyword&quot;&gt;this&lt;/span&gt;.a);
-    },&lt;span class=&quot;hljs-number&quot;&gt;30&lt;/span&gt;);
-}
-</code></pre><p>}<br>obj.foo();  <span class="hljs-comment">//1</span></p>
-</li>
+<ol>
+<li>箭头函数中的this由函数所在的外部作用域来决定的</li>
 </ol>
+<p>这里箭头函数中this遵循词法作用域的规则。如：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> a = <span class="number">2</span>;</div><div class="line"><span class="keyword">var</span> obj = &#123;</div><div class="line">    <span class="attr">a</span>: <span class="number">1</span>,</div><div class="line">    <span class="attr">foo</span>: <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        setTimeout(<span class="function"><span class="params">()</span>=&gt;</span>&#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</div><div class="line">        &#125;,<span class="number">30</span>);</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">obj.foo();  <span class="comment">//1</span></div></pre></td></tr></table></figure>
 <p>这里定时器中的this并没有指向全局对象，是绑定到obj，可以看出是继承了外层函数中的this的绑定对象。</p>
 <ol>
 <li>箭头函数的this绑定无法修改</li>
 </ol>
-<p>箭头函数使用自己独特的this绑定原则，不能通过<code>.call()</code>等方式改变this指向。<br>            <div><br>                作者：ontides 发表于2016/11/8 0:20:31 <a href="http://blog.csdn.net/ontides/article/details/53075119">原文链接</a><br>            </div><br>            <div><br>            阅读：45 评论：0 <a href="http://blog.csdn.net/ontides/article/details/53075119#comments">查看评论</a><br>            </div></p>
+<p>箭头函数使用自己独特的this绑定原则，不能通过<code>.call()</code>等方式改变this指向。</p>
 
       
     </div>
@@ -451,7 +356,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
         <p><span>本文标题:</span><a href="/2016/11/08/JavaScript中的this/">JavaScript中的this</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">Ontides</a></p>
         <p><span>发布时间:</span>2016-11-08, 00:20:31</p>
-        <p><span>最后更新:</span>2017-02-16, 13:43:36</p>
+        <p><span>最后更新:</span>2017-02-19, 14:30:50</p>
         <p>
             <span>原始链接:</span><a class="post-url" href="/2016/11/08/JavaScript中的this/" title="JavaScript中的this">https://ontides.github.io/2016/11/08/JavaScript中的this/</a>
             <span class="copy-path" data-clipboard-text="原文: https://ontides.github.io/2016/11/08/JavaScript中的this/　　作者: Ontides" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
@@ -487,7 +392,7 @@ foo: &lt;span class=&quot;hljs-function&quot;&gt;&lt;span class=&quot;hljs-keywo
     <div id="toc" class="toc-article">
         <strong class="toc-title">文章目录</strong>
         
-            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、this的起源"><span class="toc-number">1.</span> <span class="toc-text">一、this的起源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、对this的误解"><span class="toc-number">2.</span> <span class="toc-text">二、对this的误解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-默认绑定"><span class="toc-number">2.1.</span> <span class="toc-text">4. 默认绑定</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、this绑定优先级"><span class="toc-number">3.</span> <span class="toc-text">四、this绑定优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、值得注意的几个点"><span class="toc-number">4.</span> <span class="toc-text">五、值得注意的几个点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-小心隐性绑定"><span class="toc-number">4.1.</span> <span class="toc-text">1. 小心隐性绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-箭头函数"><span class="toc-number">4.2.</span> <span class="toc-text">2. 箭头函数</span></a></li></ol></li></ol>
+            <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、this的起源"><span class="toc-number">1.</span> <span class="toc-text">一、this的起源</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、对this的误解"><span class="toc-number">2.</span> <span class="toc-text">二、对this的误解</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-隐式绑定"><span class="toc-number">2.1.</span> <span class="toc-text">1. 隐式绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-显式绑定"><span class="toc-number">2.2.</span> <span class="toc-text">2. 显式绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-new绑定"><span class="toc-number">2.3.</span> <span class="toc-text">3. new绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-默认绑定"><span class="toc-number">2.4.</span> <span class="toc-text">4. 默认绑定</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、this绑定优先级"><span class="toc-number">3.</span> <span class="toc-text">四、this绑定优先级</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、值得注意的几个点"><span class="toc-number">4.</span> <span class="toc-text">五、值得注意的几个点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-小心隐性绑定"><span class="toc-number">4.1.</span> <span class="toc-text">1. 小心隐性绑定</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-箭头函数"><span class="toc-number">4.2.</span> <span class="toc-text">2. 箭头函数</span></a></li></ol></li></ol>
         
     </div>
     <style>
